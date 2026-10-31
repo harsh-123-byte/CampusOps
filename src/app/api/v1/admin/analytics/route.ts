@@ -73,15 +73,32 @@ export async function GET() {
       })
     );
 
-    // Monthly trends (past 6 months simulation/aggregation)
-    const monthlyTrends = [
-      { month: "May", requests: Math.max(8, Math.round(totalRequests * 0.1)), approved: Math.max(6, Math.round(approvedRequests * 0.1)) },
-      { month: "Jun", requests: Math.max(12, Math.round(totalRequests * 0.15)), approved: Math.max(10, Math.round(approvedRequests * 0.15)) },
-      { month: "Jul", requests: Math.max(18, Math.round(totalRequests * 0.2)), approved: Math.max(15, Math.round(approvedRequests * 0.2)) },
-      { month: "Aug", requests: Math.max(25, Math.round(totalRequests * 0.25)), approved: Math.max(22, Math.round(approvedRequests * 0.25)) },
-      { month: "Sep", requests: Math.max(20, Math.round(totalRequests * 0.2)), approved: Math.max(18, Math.round(approvedRequests * 0.2)) },
-      { month: "Oct", requests: totalRequests, approved: approvedRequests },
-    ];
+    // Calculate real monthly application trends for the past 6 calendar months
+    const monthlyTrends = [];
+    const now = new Date();
+
+    for (let i = 5; i >= 0; i--) {
+      const startOfMonth = new Date(now.getFullYear(), now.getMonth() - i, 1, 0, 0, 0, 0);
+      const endOfMonth = new Date(now.getFullYear(), now.getMonth() - i + 1, 0, 23, 59, 59, 999);
+
+      const monthLabel = startOfMonth.toLocaleString("default", { month: "short" });
+
+      const [requests, approved] = await Promise.all([
+        ServiceRequest.countDocuments({
+          createdAt: { $gte: startOfMonth, $lte: endOfMonth },
+        }),
+        ServiceRequest.countDocuments({
+          status: "APPROVED",
+          createdAt: { $gte: startOfMonth, $lte: endOfMonth },
+        }),
+      ]);
+
+      monthlyTrends.push({
+        month: monthLabel,
+        requests,
+        approved,
+      });
+    }
 
     return NextResponse.json({
       metrics: {
