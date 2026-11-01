@@ -14,15 +14,23 @@ export async function GET(req: NextRequest) {
     }
 
     await connectDB();
+    const { purgeDemoData } = await import("@/lib/cleanup");
+    await purgeDemoData();
+
     const { searchParams } = new URL(req.url);
     const role = searchParams.get("role");
     const search = searchParams.get("search");
 
-    const query: any = {};
+    const query: any = {
+      email: { $not: /@(campusops\.demo|example\.com)$/i },
+    };
     if (role && role !== "ALL") query.role = role;
     if (search && search.trim().length > 0) {
       const reg = new RegExp(search.trim(), "i");
-      query.$or = [{ name: reg }, { email: reg }, { rollNumber: reg }, { employeeId: reg }];
+      query.$and = [
+        { email: { $not: /@(campusops\.demo|example\.com)$/i } },
+        { $or: [{ name: reg }, { email: reg }, { rollNumber: reg }, { employeeId: reg }] },
+      ];
     }
 
     const users = await User.find(query)
@@ -50,6 +58,13 @@ export async function POST(req: NextRequest) {
 
     if (!name || !email || !password || !role) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+    }
+
+    if (role === "ADMIN") {
+      return NextResponse.json(
+        { error: "Only one single administrator is permitted in the system. You cannot create additional admin accounts." },
+        { status: 400 }
+      );
     }
 
     await connectDB();
@@ -119,7 +134,15 @@ export async function PATCH(req: NextRequest) {
     }
 
     if (typeof isActive === "boolean") user.isActive = isActive;
-    if (role) user.role = role;
+    if (role) {
+      if (role === "ADMIN" && user.role !== "ADMIN") {
+        return NextResponse.json(
+          { error: "Cannot promote user to Admin. Only one administrator is permitted." },
+          { status: 400 }
+        );
+      }
+      user.role = role;
+    }
     if (departmentId !== undefined) {
       user.departmentId = departmentId ? new mongoose.Types.ObjectId(departmentId) : undefined;
     }

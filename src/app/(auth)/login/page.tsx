@@ -11,12 +11,17 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [loginFailed, setLoginFailed] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) return;
     setLoading(true);
-    await login(email, password);
+    setLoginFailed(false);
+    const ok = await login(email, password);
+    if (!ok) {
+      setLoginFailed(true);
+    }
     setLoading(false);
   };
 
@@ -34,10 +39,10 @@ export default function LoginPage() {
             </div>
             <span className="text-2xl font-bold text-white tracking-tight">CampusOps</span>
           </Link>
-          <p className="text-sm text-slate-400">Intelligent Campus Workflow & Approvals Portal</p>
+          <p className="text-sm text-slate-400">Campus Workflow & Approvals Portal</p>
         </div>
 
-        {/* Regular Login Form */}
+        {/* Login Card */}
         <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-2xl">
           <div className="flex items-center gap-2 mb-6">
             <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-400">
@@ -45,27 +50,36 @@ export default function LoginPage() {
             </div>
             <div>
               <h2 className="text-lg font-semibold text-white">Sign in to your account</h2>
-              <p className="text-xs text-slate-400">Access your student, faculty, or admin dashboard</p>
+              <p className="text-xs text-slate-400">Enter your credentials to access your dashboard</p>
             </div>
           </div>
 
+          {/* Error Message */}
+          {loginFailed && (
+            <div className="mb-4 p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-xs text-rose-300">
+              <p className="font-semibold text-rose-200">Invalid email or password</p>
+              <p className="text-[11px] text-slate-400 mt-0.5">
+                Please check your email and password, or create an account if you haven&apos;t registered yet.
+              </p>
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1.5">Institutional Email</label>
+              <label className="block text-xs font-medium text-slate-300 mb-1.5">Email Address</label>
               <input
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="name@college.edu"
-                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800/80 border border-slate-700 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800/80 border border-slate-700 text-sm text-white placeholder-slate-500 focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
               />
             </div>
 
             <div>
               <div className="flex items-center justify-between mb-1.5">
                 <label className="block text-xs font-medium text-slate-300">Password</label>
-                <span className="text-[11px] text-slate-500">Secured via bcrypt</span>
               </div>
               <input
                 type="password"
@@ -73,14 +87,14 @@ export default function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800/80 border border-slate-700 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800/80 border border-slate-700 text-sm text-white placeholder-slate-500 focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
               />
             </div>
 
             <Button
               type="submit"
               loading={loading}
-              className="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium text-sm transition-all shadow-md shadow-blue-600/30 mt-2"
+              className="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium text-sm transition-all shadow-md shadow-blue-600/30 mt-2 cursor-pointer"
             >
               Sign In <ArrowRight className="w-4 h-4 ml-1" />
             </Button>
@@ -88,9 +102,9 @@ export default function LoginPage() {
 
           <div className="mt-6 pt-6 border-t border-slate-800/80 text-center">
             <p className="text-xs text-slate-400">
-              New student to CampusOps?{" "}
+              Don&apos;t have an account?{" "}
               <Link href="/register" className="text-blue-400 hover:text-blue-300 font-medium">
-                Register Student Account
+                Create Account (Student / Faculty / Admin)
               </Link>
             </p>
           </div>

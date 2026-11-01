@@ -8,7 +8,8 @@
     "start": "next start -p 3001",
     "lint": "eslint",
     "seed": "tsx scripts/seed.ts",
-    "init:prod": "tsx scripts/init-production.ts"
+    "init:prod": "tsx scripts/init-production.ts",
+    "clean:demo": "tsx scripts/clean-demo-users.ts"
   },
   "dependencies": {
     "@google/genai": "^2.32.0",

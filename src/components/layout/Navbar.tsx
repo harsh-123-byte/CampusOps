@@ -5,8 +5,16 @@ import { useAuth } from "@/hooks/useAuth";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
 import Link from "next/link";
 import { Badge } from "@/components/ui/Badge";
+import { Sparkles } from "lucide-react";
+import { cn } from "@/lib/utils";
 
-export function Navbar({ title }: { title?: string }) {
+interface NavbarProps {
+  title?: string;
+  onToggleAIChat?: () => void;
+  isAIChatOpen?: boolean;
+}
+
+export function Navbar({ title, onToggleAIChat, isAIChatOpen }: NavbarProps) {
   const { user } = useAuth();
 
   return (
@@ -34,6 +42,28 @@ export function Navbar({ title }: { title?: string }) {
 
         {/* Notifications */}
         <NotificationBell />
+
+        {/* AI Assistant Toggle Button */}
+        {onToggleAIChat && (
+          <button
+            type="button"
+            onClick={onToggleAIChat}
+            className={cn(
+              "flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 border cursor-pointer",
+              isAIChatOpen
+                ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white border-blue-600 shadow-sm shadow-blue-500/25"
+                : "bg-white text-slate-700 hover:text-blue-600 hover:bg-blue-50/70 border-slate-200 shadow-2xs"
+            )}
+            title="Campus AI Copilot (Documents, Timeline, Scholarships)"
+          >
+            <Sparkles className={cn("w-3.5 h-3.5", isAIChatOpen ? "text-amber-300 animate-pulse" : "text-blue-600")} />
+            <span className="hidden sm:inline">AI Copilot</span>
+            <span className="flex h-2 w-2 relative">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            </span>
+          </button>
+        )}
 
         {/* User avatar and profile pill */}
         {user && (

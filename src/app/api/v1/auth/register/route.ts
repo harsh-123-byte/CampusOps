@@ -21,12 +21,18 @@ export async function POST(req: NextRequest) {
     const { name, email, password, role, departmentId, rollNumber, employeeId, phone } =
       result.data;
 
-    // Security rule: Public registration cannot create ADMIN accounts
+    // Strict Rule: System permits ONLY ONE Administrator account
     if (role === "ADMIN") {
-      return NextResponse.json(
-        { error: "Admin accounts cannot be registered publicly." },
-        { status: 403 }
-      );
+      const existingAdmin = await User.findOne({ role: "ADMIN" });
+      if (existingAdmin) {
+        return NextResponse.json(
+          {
+            error:
+              "An administrator account is already registered. Only one administrator is permitted in the system.",
+          },
+          { status: 403 }
+        );
+      }
     }
 
     const existingUser = await User.findOne({ email: email.toLowerCase() });
@@ -37,15 +43,30 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    let assignedDeptId = departmentId;
+    if (role === "ADMIN" && !assignedDeptId) {
+      const { Department } = await import("@/models/Department");
+      let adminDept = await Department.findOne({ code: "ADMIN" });
+      if (!adminDept) {
+        adminDept = await Department.create({
+          code: "ADMIN",
+          name: "General Administration & Registrar Office",
+          description: "Central Academic Records, Certificates & Student Affairs",
+          isActive: true,
+        });
+      }
+      assignedDeptId = adminDept._id.toString();
+    }
+
     const passwordHash = await hashPassword(password);
     const newUser = await User.create({
       name,
       email: email.toLowerCase(),
       passwordHash,
       role: role || "STUDENT",
-      departmentId: departmentId || undefined,
+      departmentId: assignedDeptId || undefined,
       rollNumber,
-      employeeId,
+      employeeId: employeeId || (role === "ADMIN" ? "ADM-" + Math.floor(1000 + Math.random() * 9000) : undefined),
       phone,
       isActive: true,
     });

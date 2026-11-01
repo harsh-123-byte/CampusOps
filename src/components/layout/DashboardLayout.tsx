@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { Navbar } from "@/components/layout/Navbar";
+import { AIChatSidebar } from "@/components/layout/AIChatSidebar";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 
@@ -18,6 +19,44 @@ export function DashboardLayout({
 }) {
   const { user, loading } = useAuth();
   const router = useRouter();
+  const [isAIChatOpen, setIsAIChatOpen] = useState(false);
+
+  useEffect(() => {
+    // Check localStorage or window width on mount
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem("campusops_ai_chat_open");
+      if (stored !== null) {
+        setIsAIChatOpen(stored === "true");
+      } else if (window.innerWidth >= 1280) {
+        // Default to open on desktop screens
+        setIsAIChatOpen(true);
+      }
+    }
+  }, []);
+
+  const handleToggleAIChat = () => {
+    setIsAIChatOpen((prev) => {
+      const next = !prev;
+      if (typeof window !== "undefined") {
+        localStorage.setItem("campusops_ai_chat_open", String(next));
+      }
+      return next;
+    });
+  };
+
+  const handleCloseAIChat = () => {
+    setIsAIChatOpen(false);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("campusops_ai_chat_open", "false");
+    }
+  };
+
+  const handleOpenAIChat = () => {
+    setIsAIChatOpen(true);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("campusops_ai_chat_open", "true");
+    }
+  };
 
   useEffect(() => {
     if (!loading && !user) {
@@ -37,14 +76,24 @@ export function DashboardLayout({
   }
 
   return (
-    <div className="flex h-screen bg-slate-50 overflow-hidden">
+    <div className="flex h-screen bg-slate-50 overflow-hidden relative">
       <Sidebar />
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        <Navbar title={title} />
+        <Navbar
+          title={title}
+          onToggleAIChat={handleToggleAIChat}
+          isAIChatOpen={isAIChatOpen}
+        />
         <main className="flex-1 overflow-y-auto p-6 md:p-8 bg-slate-50">
           <div className="max-w-7xl mx-auto space-y-6">{children}</div>
         </main>
       </div>
+      <AIChatSidebar
+        isOpen={isAIChatOpen}
+        onClose={handleCloseAIChat}
+        onOpen={handleOpenAIChat}
+        onToggle={handleToggleAIChat}
+      />
     </div>
   );
 }

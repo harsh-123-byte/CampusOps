@@ -39,6 +39,10 @@ export async function connectDB(): Promise<typeof mongoose> {
       await import("@/models/AuditLog");
       await import("@/models/ServiceRequest");
       await import("@/models/Notification");
+
+      const { purgeDemoData } = await import("@/lib/cleanup");
+      await purgeDemoData();
+
       return m;
     });
   }

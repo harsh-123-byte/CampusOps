@@ -8,6 +8,7 @@ import {
   AIAdminInsights,
   AIAdminInsightsSchema,
 } from "@/schemas/ai.schema";
+import { ChatService, ChatAssistantInput, ChatAssistantOutput } from "@/services/chat.service";
 
 export class AIService {
   private static getApiKey(): string | null {
@@ -22,8 +23,8 @@ export class AIService {
     if (!apiKey) return null;
 
     try {
-      // Using gemini-2.5-flash or gemini-1.5-flash
-      const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${apiKey}`;
+      const model = process.env.GEMINI_MODEL || "gemini-1.5-flash";
+      const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
       const payload = {
         contents: [
           {
@@ -59,6 +60,72 @@ export class AIService {
       return rawText || null;
     } catch (err) {
       console.warn("Gemini invocation failed, using deterministic fallback:", err);
+      return null;
+    }
+  }
+
+  /**
+   * Helper to invoke Gemini with free-form conversational Markdown text
+   */
+  private static async invokeGeminiText(
+    prompt: string,
+    systemInstruction?: string,
+    history?: Array<{ role: "user" | "model"; text: string }>
+  ): Promise<string | null> {
+    const apiKey = this.getApiKey();
+    if (!apiKey) return null;
+
+    try {
+      const model = process.env.GEMINI_MODEL || "gemini-1.5-flash";
+      const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+
+      const contents: Array<{ role: string; parts: Array<{ text: string }> }> = [];
+
+      if (history && history.length > 0) {
+        for (const item of history) {
+          contents.push({
+            role: item.role === "model" ? "model" : "user",
+            parts: [{ text: item.text }],
+          });
+        }
+      }
+
+      contents.push({
+        role: "user",
+        parts: [{ text: prompt }],
+      });
+
+      const payload: Record<string, any> = {
+        contents,
+        generationConfig: {
+          temperature: 0.4,
+          maxOutputTokens: 1200,
+        },
+        ...(systemInstruction
+          ? {
+              systemInstruction: {
+                parts: [{ text: systemInstruction }],
+              },
+            }
+          : {}),
+      };
+
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        console.warn(`Gemini Chat API returned status ${response.status}: ${await response.text()}`);
+        return null;
+      }
+
+      const data = await response.json();
+      const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+      return rawText || null;
+    } catch (err) {
+      console.warn("Gemini Chat invocation failed, using deterministic fallback:", err);
       return null;
     }
   }
@@ -384,4 +451,13 @@ Return JSON:
       isFallback: true,
     };
   }
+
+  /**
+   * E. AI Conversational Assistant / Chatbot for Students, Faculty, and Admin
+   */
+  static async chatWithAssistant(input: ChatAssistantInput): Promise<ChatAssistantOutput> {
+    return ChatService.chatWithAssistant(input);
+  }
 }
+
+export default AIService;
