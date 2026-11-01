@@ -5,6 +5,7 @@ import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { Button } from "@/components/ui/Button";
 import { AIDocumentReviewer } from "@/components/requests/AIDocumentReviewer";
 import { AIAssistantDrawer } from "@/components/requests/AIAssistantDrawer";
+import { GeminiSubmissionReviewer } from "@/components/requests/GeminiSubmissionReviewer";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import {
@@ -593,6 +594,17 @@ export default function NewRequestPage() {
                   </span>
                 </div>
               </div>
+
+              {/* Gemini AI Pre-Submission Reviewer */}
+              <GeminiSubmissionReviewer
+                requestType={type}
+                title={title}
+                description={description}
+                formData={formData}
+                attachments={uploadedAttachments}
+                onAddAttachment={(att) => setUploadedAttachments((prev) => [...prev, att])}
+                onRemoveAttachment={removeAttachment}
+              />
 
               <div className="flex items-center justify-between pt-4 border-t border-slate-100">
                 <Button variant="outline" onClick={() => setCurrentStep(2)}>

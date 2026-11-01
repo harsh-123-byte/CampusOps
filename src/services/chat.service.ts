@@ -38,27 +38,38 @@ export class ChatService {
   }
 
   /**
-   * Helper to invoke Gemini with conversational Markdown output
+   * Helper to invoke Gemini with conversational Markdown output using @google/genai with high-speed failover
    */
   private static async invokeGeminiText(
     prompt: string,
     systemInstruction?: string,
-    history?: Array<{ role: "user" | "model"; text: string }>
+    history?: Array<{ role: "user" | "model" | "assistant"; content: string }>
   ): Promise<string | null> {
     const apiKey = this.getApiKey();
     if (!apiKey) return null;
 
+    // Prioritize high-speed models (1.1-1.4s response times) to eliminate waiting
+    const modelsToTry = [
+      process.env.GEMINI_MODEL || "gemini-3.5-flash-lite",
+      "gemini-flash-lite-latest",
+      "gemini-3.1-flash-lite",
+      "gemini-flash-latest",
+      "gemini-3.8-flash",
+    ];
+
     try {
-      const model = process.env.GEMINI_MODEL || "gemini-1.5-flash";
-      const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+      const { GoogleGenAI } = await import("@google/genai");
+      const ai = new GoogleGenAI({ apiKey });
 
-      const contents: Array<{ role: string; parts: Array<{ text: string }> }> = [];
+      const contents: Array<any> = [];
 
+      // Keep recent 8 messages to prevent large context transfer latency
       if (history && history.length > 0) {
-        for (const item of history) {
+        const recentHistory = history.slice(-8);
+        for (const item of recentHistory) {
           contents.push({
-            role: item.role === "model" ? "model" : "user",
-            parts: [{ text: item.text }],
+            role: item.role === "assistant" || item.role === "model" ? "model" : "user",
+            parts: [{ text: item.content }],
           });
         }
       }
@@ -68,35 +79,34 @@ export class ChatService {
         parts: [{ text: prompt }],
       });
 
-      const payload: Record<string, any> = {
-        contents,
-        generationConfig: {
-          temperature: 0.4,
-          maxOutputTokens: 1200,
-        },
-        ...(systemInstruction
-          ? {
-              systemInstruction: {
-                parts: [{ text: systemInstruction }],
-              },
-            }
-          : {}),
-      };
+      for (const model of modelsToTry) {
+        try {
+          const timeoutMs = 12000;
+          const generatePromise = ai.models.generateContent({
+            model,
+            contents,
+            config: {
+              temperature: 0.4,
+              maxOutputTokens: 1000,
+              ...(systemInstruction ? { systemInstruction } : {}),
+            },
+          });
 
-      const response = await fetch(endpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
+          const timeoutPromise = new Promise<never>((_, reject) =>
+            setTimeout(() => reject(new Error(`Timeout after ${timeoutMs}ms`)), timeoutMs)
+          );
 
-      if (!response.ok) {
-        console.warn(`Gemini Chat API returned status ${response.status}: ${await response.text()}`);
-        return null;
+          const response = await Promise.race([generatePromise, timeoutPromise]);
+
+          if (response.text && response.text.trim().length > 0) {
+            return response.text.trim();
+          }
+        } catch (mErr: any) {
+          console.warn(`Gemini Chat model ${model} skipped (${mErr?.message || mErr})`);
+        }
       }
 
-      const data = await response.json();
-      const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-      return rawText || null;
+      return null;
     } catch (err) {
       console.warn("Gemini Chat invocation failed, using deterministic fallback:", err);
       return null;
@@ -123,10 +133,16 @@ export class ChatService {
             .join("\n")
         : "No recent requests found for this user in the database.";
 
-    const systemPrompt = `You are CampusOps AI Copilot, the official interactive campus administration assistant for our university operations platform.
+    const systemPrompt = `You are CampusOps AI Copilot, a powerful, versatile, and highly intelligent conversational AI assistant powered by Google Gemini.
+You have the full broad conversational intelligence of Google Gemini / ChatGPT, and can answer ANY user inquiry — including academic coursework, programming, debugging, math, science, creative writing, draft preparation, general knowledge, or analytical questions.
+
+You are also deeply integrated into CampusOps, our comprehensive university operational workflow platform.
 You are currently chatting with ${user.name} (Role: ${user.role}${user.departmentName ? `, Department: ${user.departmentName}` : ""}${user.rollNumber ? `, Roll Number: ${user.rollNumber}` : ""}).
 
-CAMPUS KNOWLEDGE BASE:
+REAL-TIME USER APPLICATIONS IN SYSTEM:
+${recentRequestsSummary}
+
+CAMPUS OPERATIONS & DOCUMENT KNOWLEDGE BASE:
 1. REQUIRED DOCUMENTS & VERIFICATION:
    - Bonafide Certificate:
      • Required: Current student ID card copy, clearance of semester fees receipt, stated reason (Bank loan, Passport, Visa, Bus Pass, External scholarship).
@@ -163,23 +179,14 @@ CAMPUS KNOWLEDGE BASE:
      • If CHANGES_REQUESTED: Student can edit and resubmit within 7 days.
      • If APPROVED: Digital certificate/document is immediately available.
 
-4. USER CONTEXT & REAL-TIME REQUESTS:
-${recentRequestsSummary}
-
 BEHAVIOR GUIDELINES:
-- Output clean, structured Markdown with bullet points, bold headings, and clear formatting.
-- If the user asks about their own requests or current status, refer explicitly to the real-time requests listed above!
-- Provide actionable next steps (e.g. direct them to 'New Request' or 'Approval Inbox').
-- Keep tone polite, encouraging, professional, and concise.`;
+- You are an open, helpful AI like Gemini: you can answer any general question, solve technical challenges, explain concepts, write code, answer academic questions, or assist with anything else the user asks.
+- When the user asks about campus procedures, application status, document prerequisites, or university deadlines, reference the real-time context and knowledge base above.
+- Always respond in clean, well-structured GitHub-style Markdown (using headings, lists, bold text, code blocks, or tables as appropriate).
+- Maintain an encouraging, articulate, and professional tone.`;
 
-    // 2. Try invoking Gemini if API key is present
-    const geminiHistory =
-      history?.map((h) => ({
-        role: (h.role === "assistant" || h.role === "model" ? "model" : "user") as "user" | "model",
-        text: h.content,
-      })) || [];
-
-    const geminiReply = await this.invokeGeminiText(message, systemPrompt, geminiHistory);
+    // 2. Try invoking live Google Gemini with history
+    const geminiReply = await this.invokeGeminiText(message, systemPrompt, history);
 
     if (geminiReply) {
       return {
@@ -189,7 +196,7 @@ BEHAVIOR GUIDELINES:
       };
     }
 
-    // 3. Deterministic Intelligent Fallback Engine
+    // 3. Fallback Engine (Active if Gemini network or API key is unavailable)
     // A. Check for requests status lookup
     if (
       lower.includes("status") ||
@@ -465,18 +472,19 @@ Administrator tools and guidelines:
       };
     }
 
-    // G. Default Fallback
+    // G. Default Universal Fallback
     return {
-      reply: `### 👋 Hi ${user.name}! How can I help you today?
+      reply: `### 👋 Hi ${user.name}!
 
-I am your **CampusOps AI Copilot**, available to answer questions about campus administration, requirements, and procedures:
+I am your **CampusOps AI Copilot**, ready to help you with anything across your campus journey and general inquiries:
 
-* 📄 **Document Requirements**: Learn what's needed for Bonafide, NOC, Lab Access, and Event Permissions.
-* ⏱️ **Timelines & SLAs**: Expected turnaround times and approval stages across all departments.
-* 🎓 **Scholarships & Financial Aid**: Merit scholarships, means-based fee waivers, and National Scholarship Portal (NSP) verification.
-* 🔍 **Application Status**: Real-time tracking of your submitted campus requests.
+* 📄 **Document Requirements**: Clear guides for Bonafide, NOC, Lab Access, and Event Permissions.
+* ⏱️ **Timelines & SLAs**: Instant reference for departmental turnaround expectations.
+* 🎓 **Scholarships & Financial Aid**: Guidance on merit scholarships and NSP portal verifications.
+* 🔍 **Application Tracking**: Check live progress on your pending campus requests.
+* 💡 **General Questions**: Ask me about code, math, research, study topics, or drafting!
 
-Feel free to ask any question or tap one of the suggested prompts below!`,
+What would you like to explore?`,
       isFallback: true,
       provider: "CampusOps Intelligence Engine",
       suggestions: [
@@ -494,4 +502,3 @@ export async function chatWithAssistant(input: ChatAssistantInput): Promise<Chat
 }
 
 export default ChatService;
-

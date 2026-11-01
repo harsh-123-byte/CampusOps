@@ -22,110 +22,47 @@ export class AIService {
     const apiKey = this.getApiKey();
     if (!apiKey) return null;
 
-    try {
-      const model = process.env.GEMINI_MODEL || "gemini-1.5-flash";
-      const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
-      const payload = {
-        contents: [
-          {
-            parts: [{ text: prompt }],
-          },
-        ],
-        generationConfig: {
-          temperature: 0.2,
-          responseMimeType: "application/json",
-        },
-        ...(systemInstruction
-          ? {
-              systemInstruction: {
-                parts: [{ text: systemInstruction }],
-              },
-            }
-          : {}),
-      };
-
-      const response = await fetch(endpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-
-      if (!response.ok) {
-        console.warn(`Gemini API returned status ${response.status}: ${await response.text()}`);
-        return null;
-      }
-
-      const data = await response.json();
-      const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-      return rawText || null;
-    } catch (err) {
-      console.warn("Gemini invocation failed, using deterministic fallback:", err);
-      return null;
-    }
-  }
-
-  /**
-   * Helper to invoke Gemini with free-form conversational Markdown text
-   */
-  private static async invokeGeminiText(
-    prompt: string,
-    systemInstruction?: string,
-    history?: Array<{ role: "user" | "model"; text: string }>
-  ): Promise<string | null> {
-    const apiKey = this.getApiKey();
-    if (!apiKey) return null;
+    const modelsToTry = [
+      process.env.GEMINI_MODEL || "gemini-3.5-flash-lite",
+      "gemini-flash-lite-latest",
+      "gemini-3.1-flash-lite",
+      "gemini-flash-latest",
+      "gemini-3.8-flash",
+    ];
 
     try {
-      const model = process.env.GEMINI_MODEL || "gemini-1.5-flash";
-      const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+      const { GoogleGenAI } = await import("@google/genai");
+      const ai = new GoogleGenAI({ apiKey });
 
-      const contents: Array<{ role: string; parts: Array<{ text: string }> }> = [];
-
-      if (history && history.length > 0) {
-        for (const item of history) {
-          contents.push({
-            role: item.role === "model" ? "model" : "user",
-            parts: [{ text: item.text }],
+      for (const model of modelsToTry) {
+        try {
+          const timeoutMs = 12000;
+          const generatePromise = ai.models.generateContent({
+            model,
+            contents: prompt,
+            config: {
+              temperature: 0.2,
+              responseMimeType: "application/json",
+              ...(systemInstruction ? { systemInstruction } : {}),
+            },
           });
+
+          const timeoutPromise = new Promise<never>((_, reject) =>
+            setTimeout(() => reject(new Error(`Timeout after ${timeoutMs}ms`)), timeoutMs)
+          );
+
+          const response = await Promise.race([generatePromise, timeoutPromise]);
+
+          if (response.text) {
+            return response.text;
+          }
+        } catch (mErr: any) {
+          console.warn(`Gemini invoke model ${model} skipped (${mErr?.message || mErr})`);
         }
       }
-
-      contents.push({
-        role: "user",
-        parts: [{ text: prompt }],
-      });
-
-      const payload: Record<string, any> = {
-        contents,
-        generationConfig: {
-          temperature: 0.4,
-          maxOutputTokens: 1200,
-        },
-        ...(systemInstruction
-          ? {
-              systemInstruction: {
-                parts: [{ text: systemInstruction }],
-              },
-            }
-          : {}),
-      };
-
-      const response = await fetch(endpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-
-      if (!response.ok) {
-        console.warn(`Gemini Chat API returned status ${response.status}: ${await response.text()}`);
-        return null;
-      }
-
-      const data = await response.json();
-      const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-      return rawText || null;
+      return null;
     } catch (err) {
-      console.warn("Gemini Chat invocation failed, using deterministic fallback:", err);
+      console.warn("Gemini invocation failed, using deterministic fallback:", err);
       return null;
     }
   }

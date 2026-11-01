@@ -59,26 +59,29 @@ export async function POST(req: NextRequest) {
           .select("requestNumber title type status priority createdAt changeRequestComment rejectionReason")
           .lean();
       } else if (session.role === "FACULTY") {
-        pendingCount = await ServiceRequest.countDocuments({
-          status: { $in: ["SUBMITTED", "IN_REVIEW"] },
-        });
-        contextRequests = await ServiceRequest.find({
-          status: { $in: ["SUBMITTED", "IN_REVIEW"] },
-        })
-          .sort({ createdAt: -1 })
-          .limit(5)
-          .select("requestNumber title type status priority createdAt")
-          .lean();
+        const [pending, reqs] = await Promise.all([
+          ServiceRequest.countDocuments({ status: { $in: ["SUBMITTED", "IN_REVIEW"] } }),
+          ServiceRequest.find({ status: { $in: ["SUBMITTED", "IN_REVIEW"] } })
+            .sort({ createdAt: -1 })
+            .limit(5)
+            .select("requestNumber title type status priority createdAt")
+            .lean(),
+        ]);
+        pendingCount = pending;
+        contextRequests = reqs;
       } else if (session.role === "ADMIN") {
-        totalCount = await ServiceRequest.countDocuments();
-        pendingCount = await ServiceRequest.countDocuments({
-          status: { $in: ["SUBMITTED", "IN_REVIEW"] },
-        });
-        contextRequests = await ServiceRequest.find()
-          .sort({ createdAt: -1 })
-          .limit(5)
-          .select("requestNumber title type status priority createdAt")
-          .lean();
+        const [total, pending, reqs] = await Promise.all([
+          ServiceRequest.countDocuments(),
+          ServiceRequest.countDocuments({ status: { $in: ["SUBMITTED", "IN_REVIEW"] } }),
+          ServiceRequest.find()
+            .sort({ createdAt: -1 })
+            .limit(5)
+            .select("requestNumber title type status priority createdAt")
+            .lean(),
+        ]);
+        totalCount = total;
+        pendingCount = pending;
+        contextRequests = reqs;
       }
     } catch (dbErr) {
       console.warn("Could not retrieve live context from database for chat:", dbErr);
