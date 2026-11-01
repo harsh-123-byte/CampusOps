@@ -101,7 +101,7 @@ export default function RegisterPage() {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <div className="flex items-center justify-between mb-1.5">
+              <div className="flex flex-wrap items-center justify-between gap-1 mb-1.5">
                 <label className="block text-xs font-medium text-slate-300">Select Role</label>
                 {adminExists === true && (
                   <span className="text-[10px] text-amber-400 font-medium flex items-center gap-1">

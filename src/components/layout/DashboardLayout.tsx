@@ -5,7 +5,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { Navbar } from "@/components/layout/Navbar";
 import { AIChatSidebar } from "@/components/layout/AIChatSidebar";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { Loader2 } from "lucide-react";
 
 export function DashboardLayout({
@@ -19,7 +19,14 @@ export function DashboardLayout({
 }) {
   const { user, loading } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
   const [isAIChatOpen, setIsAIChatOpen] = useState(false);
+  const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
+
+  // Close mobile drawer when route changes
+  useEffect(() => {
+    setIsMobileNavOpen(false);
+  }, [pathname]);
 
   useEffect(() => {
     // Check localStorage or window width on mount
@@ -77,15 +84,19 @@ export function DashboardLayout({
 
   return (
     <div className="flex h-screen bg-slate-50 overflow-hidden relative">
-      <Sidebar />
+      <Sidebar
+        isOpen={isMobileNavOpen}
+        onClose={() => setIsMobileNavOpen(false)}
+      />
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         <Navbar
           title={title}
           onToggleAIChat={handleToggleAIChat}
           isAIChatOpen={isAIChatOpen}
+          onToggleMobileNav={() => setIsMobileNavOpen((prev) => !prev)}
         />
-        <main className="flex-1 overflow-y-auto p-6 md:p-8 bg-slate-50">
-          <div className="max-w-7xl mx-auto space-y-6">{children}</div>
+        <main className="flex-1 overflow-y-auto p-3.5 sm:p-5 md:p-8 bg-slate-50">
+          <div className="max-w-7xl mx-auto space-y-5 sm:space-y-6">{children}</div>
         </main>
       </div>
       <AIChatSidebar

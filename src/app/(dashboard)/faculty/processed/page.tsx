@@ -83,52 +83,92 @@ export default function FacultyProcessedPage() {
             No processed applications found.
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse text-xs">
-              <thead>
-                <tr className="bg-slate-50 border-b border-slate-100 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
-                  <th className="py-3 px-4">Request #</th>
-                  <th className="py-3 px-4">Student</th>
-                  <th className="py-3 px-4">Category</th>
-                  <th className="py-3 px-4">Subject</th>
-                  <th className="py-3 px-4">Decision</th>
-                  <th className="py-3 px-4">Processed Date</th>
-                  <th className="py-3 px-4 text-right">Action</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {filtered.map((req) => (
-                  <tr key={req._id} className="hover:bg-slate-50/70 transition-colors">
-                    <td className="py-3.5 px-4 font-mono font-bold text-slate-900">
-                      {req.requestNumber}
-                    </td>
-                    <td className="py-3.5 px-4 font-semibold text-slate-800">
-                      {req.studentId?.name || "Student"}
-                    </td>
-                    <td className="py-3.5 px-4">
-                      <TypeBadge type={req.type} />
-                    </td>
-                    <td className="py-3.5 px-4 font-medium text-slate-700 max-w-[260px] truncate">
-                      {req.title}
-                    </td>
-                    <td className="py-3.5 px-4">
-                      <StatusBadge status={req.status} />
-                    </td>
-                    <td className="py-3.5 px-4 text-slate-400 whitespace-nowrap">
-                      {formatDate(req.completedAt || req.updatedAt)}
-                    </td>
-                    <td className="py-3.5 px-4 text-right">
-                      <Link href={`/faculty/requests/${req._id}`}>
-                        <Button variant="outline" size="sm" className="text-xs">
-                          Inspect
-                        </Button>
-                      </Link>
-                    </td>
+          <>
+            {/* Desktop Table View */}
+            <div className="hidden md:block overflow-x-auto">
+              <table className="w-full text-left border-collapse text-xs">
+                <thead>
+                  <tr className="bg-slate-50 border-b border-slate-100 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
+                    <th className="py-3 px-4">Request #</th>
+                    <th className="py-3 px-4">Student</th>
+                    <th className="py-3 px-4">Category</th>
+                    <th className="py-3 px-4">Subject</th>
+                    <th className="py-3 px-4">Decision</th>
+                    <th className="py-3 px-4">Processed Date</th>
+                    <th className="py-3 px-4 text-right">Action</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {filtered.map((req) => (
+                    <tr key={req._id} className="hover:bg-slate-50/70 transition-colors">
+                      <td className="py-3.5 px-4 font-mono font-bold text-slate-900">
+                        {req.requestNumber}
+                      </td>
+                      <td className="py-3.5 px-4 font-semibold text-slate-800">
+                        {req.studentId?.name || "Student"}
+                      </td>
+                      <td className="py-3.5 px-4">
+                        <TypeBadge type={req.type} />
+                      </td>
+                      <td className="py-3.5 px-4 font-medium text-slate-700 max-w-[260px] truncate">
+                        {req.title}
+                      </td>
+                      <td className="py-3.5 px-4">
+                        <StatusBadge status={req.status} />
+                      </td>
+                      <td className="py-3.5 px-4 text-slate-400 whitespace-nowrap">
+                        {formatDate(req.completedAt || req.updatedAt)}
+                      </td>
+                      <td className="py-3.5 px-4 text-right">
+                        <Link href={`/faculty/requests/${req._id}`}>
+                          <Button variant="outline" size="sm" className="text-xs">
+                            Inspect
+                          </Button>
+                        </Link>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Mobile Card List View */}
+            <div className="block md:hidden divide-y divide-slate-100">
+              {filtered.map((req) => (
+                <div key={req._id} className="p-4 space-y-2.5">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="font-mono font-bold text-xs text-slate-900">
+                      {req.requestNumber}
+                    </span>
+                    <StatusBadge status={req.status} />
+                  </div>
+
+                  <div className="text-xs">
+                    <span className="font-semibold text-slate-900">{req.studentId?.name || "Student"}</span>
+                  </div>
+
+                  <Link href={`/faculty/requests/${req._id}`} className="block group">
+                    <h4 className="text-sm font-semibold text-slate-900 group-hover:text-indigo-600 transition-colors leading-snug">
+                      {req.title}
+                    </h4>
+                  </Link>
+
+                  <div className="flex items-center gap-1.5">
+                    <TypeBadge type={req.type} />
+                  </div>
+
+                  <div className="flex items-center justify-between pt-2 border-t border-slate-50 text-[11px] text-slate-400">
+                    <span>{formatDate(req.completedAt || req.updatedAt)}</span>
+                    <Link href={`/faculty/requests/${req._id}`}>
+                      <Button variant="outline" size="sm" className="text-xs h-8 px-3">
+                        Inspect
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
         )}
       </div>
     </DashboardLayout>

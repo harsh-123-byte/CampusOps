@@ -24,12 +24,12 @@ export default function LandingPage() {
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col selection:bg-blue-600 selection:text-white">
       {/* Top Navbar */}
       <header className="sticky top-0 z-50 glass-nav border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-md">
-        <div className="max-w-7xl mx-auto px-6 h-18 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-white shadow-lg shadow-blue-500/25 group-hover:scale-105 transition-transform">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 sm:h-18 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2 group shrink-0">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-white shadow-lg shadow-blue-500/25 group-hover:scale-105 transition-transform">
               <Sparkles className="w-5 h-5" />
             </div>
-            <span className="font-extrabold text-xl tracking-tight text-white">CampusOps</span>
+            <span className="font-extrabold text-lg sm:text-xl tracking-tight text-white">CampusOps</span>
           </Link>
 
           <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-300">
@@ -47,15 +47,17 @@ export default function LandingPage() {
             </a>
           </nav>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
             <Link href="/login">
-              <Button variant="ghost" size="sm" className="text-slate-300 hover:text-white hover:bg-slate-800">
+              <Button variant="ghost" size="sm" className="text-slate-300 hover:text-white hover:bg-slate-800 text-xs sm:text-sm px-2.5 sm:px-3">
                 Sign In
               </Button>
             </Link>
             <Link href="/register">
-              <Button size="sm" className="bg-blue-600 hover:bg-blue-500 text-white shadow-md shadow-blue-600/30">
-                Student Portal <ArrowRight className="w-4 h-4 ml-1" />
+              <Button size="sm" className="bg-blue-600 hover:bg-blue-500 text-white shadow-md shadow-blue-600/30 text-xs sm:text-sm px-2.5 sm:px-3">
+                <span className="hidden sm:inline">Student Portal</span>
+                <span className="sm:hidden">Register</span>
+                <ArrowRight className="w-3.5 h-3.5 ml-1" />
               </Button>
             </Link>
           </div>

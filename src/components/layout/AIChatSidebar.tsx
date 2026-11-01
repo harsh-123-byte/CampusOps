@@ -398,7 +398,7 @@ export function AIChatSidebar({ isOpen, onClose, onOpen }: AIChatSidebarProps) {
       {!isOpen && (
         <button
           onClick={onOpen || onClose}
-          className="fixed bottom-6 right-6 z-40 flex items-center gap-2.5 px-4 py-3 rounded-full bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 hover:from-blue-700 hover:to-indigo-800 text-white shadow-xl shadow-blue-600/30 hover:shadow-blue-600/50 hover:scale-105 active:scale-95 transition-all duration-200 group border border-white/20 cursor-pointer"
+          className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 flex items-center gap-2 p-3 sm:px-4 sm:py-3 rounded-full bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 hover:from-blue-700 hover:to-indigo-800 text-white shadow-xl shadow-blue-600/30 hover:shadow-blue-600/50 hover:scale-105 active:scale-95 transition-all duration-200 group border border-white/20 cursor-pointer"
           title="Open Campus AI Copilot"
         >
           <div className="relative">
@@ -408,8 +408,8 @@ export function AIChatSidebar({ isOpen, onClose, onOpen }: AIChatSidebarProps) {
               <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-amber-300"></span>
             </span>
           </div>
-          <span className="text-xs font-bold tracking-wide">Campus AI Copilot</span>
-          <Sparkles className="w-4 h-4 text-amber-300 group-hover:rotate-12 transition-transform" />
+          <span className="hidden sm:inline text-xs font-bold tracking-wide">Campus AI Copilot</span>
+          <Sparkles className="w-4 h-4 text-amber-300 group-hover:rotate-12 transition-transform hidden sm:inline" />
         </button>
       )}
 

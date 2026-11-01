@@ -170,74 +170,135 @@ export default function AdminUsersPage() {
         ) : users.length === 0 ? (
           <div className="p-16 text-center text-sm text-slate-500">No matching users found.</div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse text-xs">
-              <thead>
-                <tr className="bg-slate-50 border-b border-slate-100 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
-                  <th className="py-3 px-4">User</th>
-                  <th className="py-3 px-4">Role</th>
-                  <th className="py-3 px-4">Department</th>
-                  <th className="py-3 px-4">ID Number</th>
-                  <th className="py-3 px-4">Status</th>
-                  <th className="py-3 px-4">Joined Date</th>
-                  <th className="py-3 px-4 text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {users.map((u) => (
-                  <tr key={u._id} className="hover:bg-slate-50/70 transition-colors">
-                    <td className="py-3.5 px-4">
-                      <div className="font-semibold text-slate-900">{u.name}</div>
-                      <div className="text-[11px] text-slate-400">{u.email}</div>
-                    </td>
-                    <td className="py-3.5 px-4">
-                      <span
-                        className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                          u.role === "ADMIN"
-                            ? "bg-purple-100 text-purple-700"
-                            : u.role === "FACULTY"
-                            ? "bg-indigo-100 text-indigo-700"
-                            : "bg-blue-100 text-blue-700"
-                        }`}
-                      >
-                        {u.role}
-                      </span>
-                    </td>
-                    <td className="py-3.5 px-4 text-slate-600">
-                      {u.departmentId?.name || "General"}
-                    </td>
-                    <td className="py-3.5 px-4 font-mono text-slate-700">
-                      {u.rollNumber || u.employeeId || "-"}
-                    </td>
-                    <td className="py-3.5 px-4">
+          <>
+            {/* Desktop Table View */}
+            <div className="hidden md:block overflow-x-auto">
+              <table className="w-full text-left border-collapse text-xs">
+                <thead>
+                  <tr className="bg-slate-50 border-b border-slate-100 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
+                    <th className="py-3 px-4">User</th>
+                    <th className="py-3 px-4">Role</th>
+                    <th className="py-3 px-4">Department</th>
+                    <th className="py-3 px-4">ID Number</th>
+                    <th className="py-3 px-4">Status</th>
+                    <th className="py-3 px-4">Joined Date</th>
+                    <th className="py-3 px-4 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {users.map((u) => (
+                    <tr key={u._id} className="hover:bg-slate-50/70 transition-colors">
+                      <td className="py-3.5 px-4">
+                        <div className="font-semibold text-slate-900">{u.name}</div>
+                        <div className="text-[11px] text-slate-400">{u.email}</div>
+                      </td>
+                      <td className="py-3.5 px-4">
+                        <span
+                          className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                            u.role === "ADMIN"
+                              ? "bg-purple-100 text-purple-700"
+                              : u.role === "FACULTY"
+                              ? "bg-indigo-100 text-indigo-700"
+                              : "bg-blue-100 text-blue-700"
+                          }`}
+                        >
+                          {u.role}
+                        </span>
+                      </td>
+                      <td className="py-3.5 px-4 text-slate-600">
+                        {u.departmentId?.name || "General"}
+                      </td>
+                      <td className="py-3.5 px-4 font-mono text-slate-700">
+                        {u.rollNumber || u.employeeId || "-"}
+                      </td>
+                      <td className="py-3.5 px-4">
+                        {u.isActive ? (
+                          <span className="inline-flex items-center gap-1 text-emerald-600 font-medium">
+                            <CheckCircle2 className="w-3.5 h-3.5" /> Active
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 text-rose-500 font-medium">
+                            <XCircle className="w-3.5 h-3.5" /> Disabled
+                          </span>
+                        )}
+                      </td>
+                      <td className="py-3.5 px-4 text-slate-400 whitespace-nowrap">
+                        {formatDate(u.createdAt)}
+                      </td>
+                      <td className="py-3.5 px-4 text-right">
+                        <Button
+                          size="sm"
+                          variant={u.isActive ? "outline" : "primary"}
+                          onClick={() => handleToggleActive(u._id, u.isActive)}
+                          className="text-xs"
+                        >
+                          {u.isActive ? "Deactivate" : "Activate"}
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Mobile Card List View */}
+            <div className="block md:hidden divide-y divide-slate-100">
+              {users.map((u) => (
+                <div key={u._id} className="p-4 space-y-2.5">
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <h4 className="font-semibold text-slate-900 text-sm leading-snug">{u.name}</h4>
+                      <p className="text-xs text-slate-400">{u.email}</p>
+                    </div>
+                    <span
+                      className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold shrink-0 ${
+                        u.role === "ADMIN"
+                          ? "bg-purple-100 text-purple-700"
+                          : u.role === "FACULTY"
+                          ? "bg-indigo-100 text-indigo-700"
+                          : "bg-blue-100 text-blue-700"
+                      }`}
+                    >
+                      {u.role}
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2 text-xs py-1 text-slate-600">
+                    <div>
+                      <span className="text-[10px] text-slate-400 block uppercase">Department</span>
+                      <span className="font-medium truncate block">{u.departmentId?.name || "General"}</span>
+                    </div>
+                    <div>
+                      <span className="text-[10px] text-slate-400 block uppercase">ID Number</span>
+                      <span className="font-mono font-medium block">{u.rollNumber || u.employeeId || "-"}</span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between pt-2 border-t border-slate-50">
+                    <div>
                       {u.isActive ? (
-                        <span className="inline-flex items-center gap-1 text-emerald-600 font-medium">
+                        <span className="inline-flex items-center gap-1 text-emerald-600 text-xs font-medium">
                           <CheckCircle2 className="w-3.5 h-3.5" /> Active
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-1 text-rose-500 font-medium">
+                        <span className="inline-flex items-center gap-1 text-rose-500 text-xs font-medium">
                           <XCircle className="w-3.5 h-3.5" /> Disabled
                         </span>
                       )}
-                    </td>
-                    <td className="py-3.5 px-4 text-slate-400 whitespace-nowrap">
-                      {formatDate(u.createdAt)}
-                    </td>
-                    <td className="py-3.5 px-4 text-right">
-                      <Button
-                        size="sm"
-                        variant={u.isActive ? "outline" : "primary"}
-                        onClick={() => handleToggleActive(u._id, u.isActive)}
-                        className="text-xs"
-                      >
-                        {u.isActive ? "Deactivate" : "Activate"}
-                      </Button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                    </div>
+                    <Button
+                      size="sm"
+                      variant={u.isActive ? "outline" : "primary"}
+                      onClick={() => handleToggleActive(u._id, u.isActive)}
+                      className="text-xs h-8 px-3"
+                    >
+                      {u.isActive ? "Deactivate" : "Activate"}
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
         )}
       </div>
 

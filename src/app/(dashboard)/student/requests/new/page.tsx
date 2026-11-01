@@ -188,43 +188,47 @@ export default function NewRequestPage() {
   return (
     <DashboardLayout title="Create Service Request" requiredRole="STUDENT">
       {/* Step Indicator Header */}
-      <div className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs mb-6">
+      <div className="bg-white rounded-2xl border border-slate-200/80 p-3.5 sm:p-5 shadow-xs mb-6">
         <div className="flex items-center justify-between max-w-xl mx-auto">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 sm:gap-2">
             <span
-              className={`w-7 h-7 rounded-full text-xs font-bold flex items-center justify-center ${
+              className={`w-6 h-6 sm:w-7 sm:h-7 rounded-full text-xs font-bold flex items-center justify-center shrink-0 ${
                 currentStep >= 1 ? "bg-blue-600 text-white" : "bg-slate-100 text-slate-500"
               }`}
             >
               1
             </span>
-            <span className="text-xs font-semibold text-slate-800">Category & Type</span>
+            <span className="text-[11px] sm:text-xs font-semibold text-slate-800">
+              <span className="hidden sm:inline">Category & </span>Type
+            </span>
           </div>
 
-          <div className="w-12 h-0.5 bg-slate-200" />
+          <div className="w-3 sm:w-12 h-0.5 bg-slate-200 shrink-0" />
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 sm:gap-2">
             <span
-              className={`w-7 h-7 rounded-full text-xs font-bold flex items-center justify-center ${
+              className={`w-6 h-6 sm:w-7 sm:h-7 rounded-full text-xs font-bold flex items-center justify-center shrink-0 ${
                 currentStep >= 2 ? "bg-blue-600 text-white" : "bg-slate-100 text-slate-500"
               }`}
             >
               2
             </span>
-            <span className="text-xs font-semibold text-slate-800">Details & Documents</span>
+            <span className="text-[11px] sm:text-xs font-semibold text-slate-800">
+              <span className="hidden sm:inline">Details & </span>Docs
+            </span>
           </div>
 
-          <div className="w-12 h-0.5 bg-slate-200" />
+          <div className="w-3 sm:w-12 h-0.5 bg-slate-200 shrink-0" />
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 sm:gap-2">
             <span
-              className={`w-7 h-7 rounded-full text-xs font-bold flex items-center justify-center ${
+              className={`w-6 h-6 sm:w-7 sm:h-7 rounded-full text-xs font-bold flex items-center justify-center shrink-0 ${
                 currentStep >= 3 ? "bg-blue-600 text-white" : "bg-slate-100 text-slate-500"
               }`}
             >
               3
             </span>
-            <span className="text-xs font-semibold text-slate-800">Review & Submit</span>
+            <span className="text-[11px] sm:text-xs font-semibold text-slate-800">Review</span>
           </div>
         </div>
       </div>
@@ -642,16 +646,17 @@ export default function NewRequestPage() {
                 onRemoveAttachment={removeAttachment}
               />
 
-              <div className="flex items-center justify-between pt-4 border-t border-slate-100">
-                <Button variant="outline" onClick={() => setCurrentStep(2)}>
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-4 border-t border-slate-100">
+                <Button variant="outline" onClick={() => setCurrentStep(2)} className="w-full sm:w-auto">
                   <ArrowLeft className="w-4 h-4 mr-1" /> Edit Details
                 </Button>
 
-                <div className="flex gap-2">
+                <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
                   <Button
                     variant="outline"
                     loading={loading}
                     onClick={() => submitRequest("DRAFT")}
+                    className="w-full sm:w-auto"
                   >
                     Save as Draft
                   </Button>
@@ -659,6 +664,7 @@ export default function NewRequestPage() {
                     variant="primary"
                     loading={loading}
                     onClick={() => submitRequest("SUBMITTED")}
+                    className="w-full sm:w-auto"
                   >
                     Submit for Approval
                   </Button>
