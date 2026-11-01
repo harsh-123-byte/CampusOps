@@ -10,7 +10,8 @@ export async function GET(
 ) {
   try {
     const { filename } = await params;
-    const safeFilename = path.basename(filename);
+    const decodedFilename = decodeURIComponent(filename);
+    const safeFilename = path.basename(decodedFilename);
 
     const uploadDir = path.join(process.cwd(), "public", "uploads");
     const filePath = path.join(uploadDir, safeFilename);
@@ -18,29 +19,38 @@ export async function GET(
     let fileBuffer: Buffer | null = null;
     let contentType = "application/octet-stream";
 
-    // 1. Try reading from local disk
-    if (fs.existsSync(filePath)) {
-      fileBuffer = fs.readFileSync(filePath);
-    } else {
-      // 2. Fallback to MongoDB Attachment record if base64 stored
+    // 1. Try reading from local disk if available
+    try {
+      if (fs.existsSync(filePath)) {
+        fileBuffer = fs.readFileSync(filePath);
+      }
+    } catch {
+      // Ignored in serverless environments
+    }
+
+    // 2. Fetch from MongoDB Atlas base64 storage if not on disk
+    if (!fileBuffer) {
       await connectDB();
       const attachment = await Attachment.findOne({
         $or: [
           { url: `/uploads/${safeFilename}` },
-          { fileName: safeFilename }
-        ]
+          { url: `/uploads/${filename}` },
+          { url: safeFilename },
+          { fileName: safeFilename },
+          { fileName: filename },
+        ],
       });
 
       if (attachment && (attachment as any).fileData) {
         fileBuffer = Buffer.from((attachment as any).fileData, "base64");
-        // Re-persist to disk cache
+        // Attempt disk caching only if filesystem is writable
         try {
           if (!fs.existsSync(uploadDir)) {
             fs.mkdirSync(uploadDir, { recursive: true });
           }
           fs.writeFileSync(filePath, fileBuffer);
-        } catch (writeErr) {
-          console.warn("Could not cache file to disk:", writeErr);
+        } catch {
+          // Read-only filesystem on Vercel is expected
         }
       }
     }
@@ -53,7 +63,7 @@ export async function GET(
         </body></html>`,
         {
           status: 404,
-          headers: { "Content-Type": "text/html" }
+          headers: { "Content-Type": "text/html" },
         }
       );
     }

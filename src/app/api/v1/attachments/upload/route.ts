@@ -39,15 +39,21 @@ export async function POST(req: NextRequest) {
 
     const buffer = Buffer.from(await file.arrayBuffer());
 
-    // Save directly to public/uploads
-    const uploadDir = path.join(process.cwd(), "public", "uploads");
-    await mkdir(uploadDir, { recursive: true });
-
     const safeName = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, "_")}`;
-    const filePath = path.join(uploadDir, safeName);
-    await writeFile(filePath, buffer);
-
     const fileUrl = `/uploads/${safeName}`;
+
+    // On local environments, attempt to cache to public/uploads
+    // On Vercel / serverless lambdas (read-only filesystem), disk writes fail and are safely caught
+    try {
+      const uploadDir = path.join(process.cwd(), "public", "uploads");
+      await mkdir(uploadDir, { recursive: true });
+      const filePath = path.join(uploadDir, safeName);
+      await writeFile(filePath, buffer);
+    } catch (diskErr: any) {
+      console.log(
+        "Serverless environment detected (read-only filesystem): saving document directly to MongoDB Atlas storage."
+      );
+    }
 
     await connectDB();
     const attachment = await Attachment.create({
@@ -61,11 +67,14 @@ export async function POST(req: NextRequest) {
       fileData: buffer.toString("base64"),
     });
 
+    const attachmentObj = attachment.toObject();
+    delete (attachmentObj as any).fileData;
+
     return NextResponse.json(
       {
         success: true,
-        attachment,
-        message: "File uploaded successfully to local storage",
+        attachment: attachmentObj,
+        message: "File uploaded successfully",
       },
       { status: 201 }
     );
