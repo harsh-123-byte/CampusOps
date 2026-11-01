@@ -73,7 +73,8 @@ export class RequestService {
       const stepIds = await WorkflowService.initializeWorkflowSteps(
         request._id as mongoose.Types.ObjectId,
         request.type,
-        request.departmentId
+        request.departmentId,
+        input.assignedFacultyId
       );
       request.approvalSteps = stepIds;
       await request.save();
@@ -256,38 +257,55 @@ export class RequestService {
   }) {
     await connectDB();
 
-    const query: any = {};
+    const andConditions: any[] = [];
 
     // Role-specific scoping
     if (role === "STUDENT") {
-      query.studentId = new mongoose.Types.ObjectId(userId);
+      andConditions.push({ studentId: new mongoose.Types.ObjectId(userId) });
     } else if (role === "FACULTY") {
-      // Faculty sees requests assigned to their approval steps or in their department
-      query.status = { $ne: "DRAFT" };
+      andConditions.push({ status: { $ne: "DRAFT" } });
+
+      // Find all request IDs where this faculty is assigned to an approval step
+      const { ApprovalStep } = await import("@/models/ApprovalStep");
+      const assignedSteps = await ApprovalStep.find({
+        assignedFacultyId: new mongoose.Types.ObjectId(userId),
+      }).select("requestId");
+      const assignedRequestIds = assignedSteps.map((s) => s.requestId);
+
+      const facultyOrConditions: any[] = [
+        { _id: { $in: assignedRequestIds } },
+      ];
+
       if (departmentId) {
-        query.departmentId = new mongoose.Types.ObjectId(departmentId);
+        facultyOrConditions.push({ departmentId: new mongoose.Types.ObjectId(departmentId) });
       }
+
+      andConditions.push({ $or: facultyOrConditions });
     }
 
     // Status filter
     if (status && status !== "ALL") {
-      query.status = status;
+      andConditions.push({ status });
     }
 
     // Type filter
     if (type && type !== "ALL") {
-      query.type = type;
+      andConditions.push({ type });
     }
 
     // Search filter
     if (search && search.trim().length > 0) {
       const searchRegex = new RegExp(search.trim(), "i");
-      query.$or = [
-        { requestNumber: searchRegex },
-        { title: searchRegex },
-        { description: searchRegex },
-      ];
+      andConditions.push({
+        $or: [
+          { requestNumber: searchRegex },
+          { title: searchRegex },
+          { description: searchRegex },
+        ],
+      });
     }
+
+    const query: any = andConditions.length > 0 ? { $and: andConditions } : {};
 
     const skip = (page - 1) * limit;
     const sort: any = { [sortBy]: sortOrder === "asc" ? 1 : -1 };

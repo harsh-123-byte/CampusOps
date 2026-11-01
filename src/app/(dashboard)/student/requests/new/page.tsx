@@ -28,6 +28,8 @@ export default function NewRequestPage() {
   const [departments, setDepartments] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [uploadingFile, setUploadingFile] = useState(false);
+  const [facultyList, setFacultyList] = useState<any[]>([]);
+  const [assignedFacultyId, setAssignedFacultyId] = useState("");
 
   // Form states
   const [type, setType] = useState<RequestType>("BONAFIDE");
@@ -62,6 +64,15 @@ export default function NewRequestPage() {
           if (data.departments.length > 0 && !departmentId) {
             setDepartmentId(data.departments[0]._id);
           }
+        }
+      })
+      .catch(() => {});
+
+    fetch("/api/v1/faculty")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.faculty) {
+          setFacultyList(data.faculty);
         }
       })
       .catch(() => {});
@@ -145,6 +156,7 @@ export default function NewRequestPage() {
           title,
           description,
           departmentId,
+          assignedFacultyId: assignedFacultyId || undefined,
           priority,
           formData,
           attachments: uploadedAttachments.map((a) => a._id),
@@ -251,10 +263,10 @@ export default function NewRequestPage() {
                 ))}
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-slate-100">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 border-t border-slate-100">
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                    Target Department
+                    Target Department *
                   </label>
                   <select
                     value={departmentId}
@@ -264,6 +276,24 @@ export default function NewRequestPage() {
                     {departments.map((d) => (
                       <option key={d._id} value={d._id}>
                         {d.code} — {d.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                    Assigned Faculty Reviewer (Optional)
+                  </label>
+                  <select
+                    value={assignedFacultyId}
+                    onChange={(e) => setAssignedFacultyId(e.target.value)}
+                    className="w-full text-xs p-2.5 rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  >
+                    <option value="">Auto-assign Department Faculty</option>
+                    {facultyList.map((f) => (
+                      <option key={f._id} value={f._id}>
+                        {f.name} ({f.departmentId?.code || "Faculty"})
                       </option>
                     ))}
                   </select>
@@ -564,10 +594,16 @@ export default function NewRequestPage() {
               </div>
 
               <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3 text-xs">
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                   <div>
                     <span className="text-slate-400 block text-[11px]">Type:</span>
                     <span className="font-semibold text-slate-900">{type.replace(/_/g, " ")}</span>
+                  </div>
+                  <div>
+                    <span className="text-slate-400 block text-[11px]">Reviewing Faculty:</span>
+                    <span className="font-semibold text-indigo-700">
+                      {facultyList.find((f) => f._id === assignedFacultyId)?.name || "Auto-assigned Department Faculty"}
+                    </span>
                   </div>
                   <div>
                     <span className="text-slate-400 block text-[11px]">Priority:</span>

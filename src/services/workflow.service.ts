@@ -9,24 +9,41 @@ import mongoose from "mongoose";
 
 export class WorkflowService {
   /**
-   * Initializes approval steps based on request type and department
+   * Initializes approval steps based on request type and department, with support for specific faculty assignment
    */
   static async initializeWorkflowSteps(
     requestId: mongoose.Types.ObjectId,
     requestType: RequestType,
-    departmentId: mongoose.Types.ObjectId
+    departmentId: mongoose.Types.ObjectId,
+    preferredFacultyId?: string
   ) {
     await connectDB();
 
-    // Find available faculty in this department, or fallback to any faculty
-    const facultyList = await User.find({
-      role: "FACULTY",
-      isActive: true,
-      $or: [{ departmentId }, { departmentId: { $exists: false } }],
-    }).limit(2);
+    let primaryFaculty: any = null;
+    let secondaryFaculty: any = null;
 
-    const primaryFaculty = facultyList[0] || (await User.findOne({ role: "FACULTY", isActive: true }));
-    const secondaryFaculty = facultyList[1] || primaryFaculty;
+    // 1. If student specified a preferred faculty member, assign them directly
+    if (preferredFacultyId && mongoose.Types.ObjectId.isValid(preferredFacultyId)) {
+      primaryFaculty = await User.findOne({
+        _id: new mongoose.Types.ObjectId(preferredFacultyId),
+        role: "FACULTY",
+        isActive: true,
+      });
+    }
+
+    // 2. Otherwise find available faculty in this department, or fallback to any active faculty
+    if (!primaryFaculty) {
+      const facultyList = await User.find({
+        role: "FACULTY",
+        isActive: true,
+        $or: [{ departmentId }, { departmentId: { $exists: false } }],
+      }).limit(2);
+
+      primaryFaculty = facultyList[0] || (await User.findOne({ role: "FACULTY", isActive: true }));
+      secondaryFaculty = facultyList[1] || primaryFaculty;
+    } else {
+      secondaryFaculty = primaryFaculty;
+    }
 
     const stepsToCreate = [];
 

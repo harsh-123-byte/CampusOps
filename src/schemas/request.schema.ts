@@ -8,6 +8,7 @@ export const CreateRequestSchema = z.object({
   priority: z.enum(["LOW", "NORMAL", "HIGH", "URGENT"]).default("NORMAL"),
   formData: z.record(z.string(), z.any()).default({}),
   attachments: z.array(z.string()).default([]),
+  assignedFacultyId: z.string().optional(),
   status: z.enum(["DRAFT", "SUBMITTED"]).default("SUBMITTED"),
 });
 
