@@ -188,47 +188,47 @@ export default function NewRequestPage() {
   return (
     <DashboardLayout title="Create Service Request" requiredRole="STUDENT">
       {/* Step Indicator Header */}
-      <div className="bg-white rounded-2xl border border-slate-200/80 p-3.5 sm:p-5 shadow-xs mb-6">
+      <div className="bg-white rounded-lg border border-slate-200/90 p-3.5 sm:p-4 mb-6">
         <div className="flex items-center justify-between max-w-xl mx-auto">
-          <div className="flex items-center gap-1.5 sm:gap-2">
+          <div className="flex items-center gap-2">
             <span
-              className={`w-6 h-6 sm:w-7 sm:h-7 rounded-full text-xs font-bold flex items-center justify-center shrink-0 ${
-                currentStep >= 1 ? "bg-blue-600 text-white" : "bg-slate-100 text-slate-500"
+              className={`w-6 h-6 rounded-full text-xs font-semibold flex items-center justify-center shrink-0 ${
+                currentStep >= 1 ? "bg-slate-900 text-white" : "bg-slate-100 text-slate-500"
               }`}
             >
               1
             </span>
-            <span className="text-[11px] sm:text-xs font-semibold text-slate-800">
+            <span className="text-xs font-medium text-slate-800">
               <span className="hidden sm:inline">Category & </span>Type
             </span>
           </div>
 
-          <div className="w-3 sm:w-12 h-0.5 bg-slate-200 shrink-0" />
+          <div className="w-4 sm:w-12 h-px bg-slate-200 shrink-0" />
 
-          <div className="flex items-center gap-1.5 sm:gap-2">
+          <div className="flex items-center gap-2">
             <span
-              className={`w-6 h-6 sm:w-7 sm:h-7 rounded-full text-xs font-bold flex items-center justify-center shrink-0 ${
-                currentStep >= 2 ? "bg-blue-600 text-white" : "bg-slate-100 text-slate-500"
+              className={`w-6 h-6 rounded-full text-xs font-semibold flex items-center justify-center shrink-0 ${
+                currentStep >= 2 ? "bg-slate-900 text-white" : "bg-slate-100 text-slate-500"
               }`}
             >
               2
             </span>
-            <span className="text-[11px] sm:text-xs font-semibold text-slate-800">
+            <span className="text-xs font-medium text-slate-800">
               <span className="hidden sm:inline">Details & </span>Docs
             </span>
           </div>
 
-          <div className="w-3 sm:w-12 h-0.5 bg-slate-200 shrink-0" />
+          <div className="w-4 sm:w-12 h-px bg-slate-200 shrink-0" />
 
-          <div className="flex items-center gap-1.5 sm:gap-2">
+          <div className="flex items-center gap-2">
             <span
-              className={`w-6 h-6 sm:w-7 sm:h-7 rounded-full text-xs font-bold flex items-center justify-center shrink-0 ${
-                currentStep >= 3 ? "bg-blue-600 text-white" : "bg-slate-100 text-slate-500"
+              className={`w-6 h-6 rounded-full text-xs font-semibold flex items-center justify-center shrink-0 ${
+                currentStep >= 3 ? "bg-slate-900 text-white" : "bg-slate-100 text-slate-500"
               }`}
             >
               3
             </span>
-            <span className="text-[11px] sm:text-xs font-semibold text-slate-800">Review</span>
+            <span className="text-xs font-medium text-slate-800">Review</span>
           </div>
         </div>
       </div>
@@ -238,10 +238,10 @@ export default function NewRequestPage() {
         <div className="lg:col-span-2 space-y-6">
           {/* STEP 1: SELECT TYPE */}
           {currentStep === 1 && (
-            <div className="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-xs space-y-6">
+            <div className="bg-white rounded-lg border border-slate-200/90 p-5 sm:p-6 space-y-6">
               <div>
-                <h3 className="text-lg font-bold text-slate-900">Select Request Category</h3>
-                <p className="text-xs text-slate-500">
+                <h3 className="text-base font-semibold text-slate-900">Select Request Category</h3>
+                <p className="text-xs text-slate-500 mt-0.5">
                   Choose the category that matches your collegiate administrative requirement
                 </p>
               </div>
@@ -252,30 +252,30 @@ export default function NewRequestPage() {
                     key={opt.type}
                     type="button"
                     onClick={() => setType(opt.type)}
-                    className={`p-4 rounded-xl border text-left transition-all relative ${
+                    className={`p-3.5 rounded-md border text-left transition-colors relative ${
                       type === opt.type
-                        ? "border-blue-600 bg-blue-50/50 shadow-xs"
-                        : "border-slate-200 hover:border-slate-300 hover:bg-slate-50"
+                        ? "border-slate-900 bg-slate-50 ring-1 ring-slate-900/10"
+                        : "border-slate-200 hover:border-slate-300 hover:bg-slate-50/50"
                     }`}
                   >
                     <div className="flex items-center justify-between mb-1">
-                      <span className="font-semibold text-sm text-slate-900">{opt.label}</span>
-                      {type === opt.type && <CheckCircle2 className="w-4 h-4 text-blue-600" />}
+                      <span className="font-semibold text-xs sm:text-sm text-slate-900">{opt.label}</span>
+                      {type === opt.type && <CheckCircle2 className="w-4 h-4 text-slate-900" />}
                     </div>
-                    <p className="text-xs text-slate-500">{opt.desc}</p>
+                    <p className="text-xs text-slate-500 leading-relaxed">{opt.desc}</p>
                   </button>
                 ))}
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 border-t border-slate-100">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                  <label className="block text-xs font-medium text-slate-700 mb-1.5">
                     Target Department *
                   </label>
                   <select
                     value={departmentId}
                     onChange={(e) => setDepartmentId(e.target.value)}
-                    className="w-full text-xs p-2.5 rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    className="w-full text-xs px-3 py-2 rounded-md border border-slate-200 bg-white text-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
                   >
                     {departments.map((d) => (
                       <option key={d._id} value={d._id}>
@@ -286,13 +286,13 @@ export default function NewRequestPage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                  <label className="block text-xs font-medium text-slate-700 mb-1.5">
                     Assigned Faculty Reviewer (Optional)
                   </label>
                   <select
                     value={assignedFacultyId}
                     onChange={(e) => setAssignedFacultyId(e.target.value)}
-                    className="w-full text-xs p-2.5 rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    className="w-full text-xs px-3 py-2 rounded-md border border-slate-200 bg-white text-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
                   >
                     <option value="">Auto-assign Department Faculty</option>
                     {facultyList.map((f) => (
@@ -304,13 +304,13 @@ export default function NewRequestPage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                  <label className="block text-xs font-medium text-slate-700 mb-1.5">
                     Priority Level
                   </label>
                   <select
                     value={priority}
                     onChange={(e) => setPriority(e.target.value as RequestPriority)}
-                    className="w-full text-xs p-2.5 rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    className="w-full text-xs px-3 py-2 rounded-md border border-slate-200 bg-white text-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none"
                   >
                     <option value="NORMAL">Normal Priority</option>
                     <option value="HIGH">High Priority</option>
@@ -320,9 +320,9 @@ export default function NewRequestPage() {
                 </div>
               </div>
 
-              <div className="flex justify-end pt-4">
+              <div className="flex justify-end pt-2">
                 <Button onClick={() => setCurrentStep(2)}>
-                  Continue to Details <ArrowRight className="w-4 h-4 ml-1" />
+                  Continue to Details <ArrowRight className="w-3.5 h-3.5 ml-1.5" />
                 </Button>
               </div>
             </div>
@@ -334,16 +334,16 @@ export default function NewRequestPage() {
               {/* AI Document Extraction Tool */}
               <AIDocumentReviewer onApplyExtraction={handleApplyAIExtraction} />
 
-              <div className="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-xs space-y-5">
+              <div className="bg-white rounded-lg border border-slate-200/90 p-5 sm:p-6 space-y-5">
                 <div>
-                  <h3 className="text-lg font-bold text-slate-900">Application Details</h3>
-                  <p className="text-xs text-slate-500">
+                  <h3 className="text-base font-semibold text-slate-900">Application Details</h3>
+                  <p className="text-xs text-slate-500 mt-0.5">
                     Provide necessary justifications and specific request parameters
                   </p>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                  <label className="block text-xs font-medium text-slate-700 mb-1.5">
                     Application Subject / Title *
                   </label>
                   <input
@@ -352,15 +352,15 @@ export default function NewRequestPage() {
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     placeholder="e.g. Request for Bonafide Certificate for Passport Renewal"
-                    className="w-full text-xs p-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none bg-white"
+                    className="w-full text-xs px-3 py-2 rounded-md border border-slate-200 focus:ring-1 focus:ring-slate-900 focus:outline-none bg-white text-slate-900"
                   />
                 </div>
 
                 {/* Dynamic Category Specific Form Fields */}
                 {type === "BONAFIDE" && (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 rounded-xl bg-slate-50 border border-slate-200">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-3.5 rounded-md bg-slate-50/80 border border-slate-200">
                     <div>
-                      <label className="block text-xs font-semibold text-slate-700 mb-1">
+                      <label className="block text-xs font-medium text-slate-700 mb-1">
                         Purpose of Certificate
                       </label>
                       <input
@@ -368,11 +368,11 @@ export default function NewRequestPage() {
                         value={formData.purpose}
                         onChange={(e) => setFormData({ ...formData, purpose: e.target.value })}
                         placeholder="e.g. Bank Education Loan / Passport / Visa"
-                        className="w-full text-xs p-2 rounded-lg border border-slate-300 bg-white"
+                        className="w-full text-xs px-2.5 py-1.5 rounded-md border border-slate-200 bg-white focus:ring-1 focus:ring-slate-900 focus:outline-none"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-semibold text-slate-700 mb-1">
+                      <label className="block text-xs font-medium text-slate-700 mb-1">
                         Current Semester
                       </label>
                       <input
@@ -380,16 +380,16 @@ export default function NewRequestPage() {
                         value={formData.semester}
                         onChange={(e) => setFormData({ ...formData, semester: e.target.value })}
                         placeholder="e.g. 6th Semester"
-                        className="w-full text-xs p-2 rounded-lg border border-slate-300 bg-white"
+                        className="w-full text-xs px-2.5 py-1.5 rounded-md border border-slate-200 bg-white focus:ring-1 focus:ring-slate-900 focus:outline-none"
                       />
                     </div>
                   </div>
                 )}
 
                 {type === "NOC" && (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 rounded-xl bg-slate-50 border border-slate-200">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-3.5 rounded-md bg-slate-50/80 border border-slate-200">
                     <div>
-                      <label className="block text-xs font-semibold text-slate-700 mb-1">
+                      <label className="block text-xs font-medium text-slate-700 mb-1">
                         Host Company / Institution
                       </label>
                       <input
@@ -397,11 +397,11 @@ export default function NewRequestPage() {
                         value={formData.companyName}
                         onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
                         placeholder="e.g. Google / Microsoft / ISRO"
-                        className="w-full text-xs p-2 rounded-lg border border-slate-300 bg-white"
+                        className="w-full text-xs px-2.5 py-1.5 rounded-md border border-slate-200 bg-white focus:ring-1 focus:ring-slate-900 focus:outline-none"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-semibold text-slate-700 mb-1">
+                      <label className="block text-xs font-medium text-slate-700 mb-1">
                         Internship Duration & Dates
                       </label>
                       <input
@@ -411,16 +411,16 @@ export default function NewRequestPage() {
                           setFormData({ ...formData, internshipDuration: e.target.value })
                         }
                         placeholder="e.g. June 1 - Aug 25, 2026 (12 Weeks)"
-                        className="w-full text-xs p-2 rounded-lg border border-slate-300 bg-white"
+                        className="w-full text-xs px-2.5 py-1.5 rounded-md border border-slate-200 bg-white focus:ring-1 focus:ring-slate-900 focus:outline-none"
                       />
                     </div>
                   </div>
                 )}
 
                 {type === "EVENT_PERMISSION" && (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 rounded-xl bg-slate-50 border border-slate-200">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-3.5 rounded-md bg-slate-50/80 border border-slate-200">
                     <div>
-                      <label className="block text-xs font-semibold text-slate-700 mb-1">
+                      <label className="block text-xs font-medium text-slate-700 mb-1">
                         Event Title
                       </label>
                       <input
@@ -428,11 +428,11 @@ export default function NewRequestPage() {
                         value={formData.eventName}
                         onChange={(e) => setFormData({ ...formData, eventName: e.target.value })}
                         placeholder="e.g. Annual Hackathon 2026"
-                        className="w-full text-xs p-2 rounded-lg border border-slate-300 bg-white"
+                        className="w-full text-xs px-2.5 py-1.5 rounded-md border border-slate-200 bg-white focus:ring-1 focus:ring-slate-900 focus:outline-none"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-semibold text-slate-700 mb-1">
+                      <label className="block text-xs font-medium text-slate-700 mb-1">
                         Event Dates & Expected Turnout
                       </label>
                       <input
@@ -442,16 +442,16 @@ export default function NewRequestPage() {
                           setFormData({ ...formData, expectedTurnout: e.target.value })
                         }
                         placeholder="e.g. Nov 14-15, 200 Students"
-                        className="w-full text-xs p-2 rounded-lg border border-slate-300 bg-white"
+                        className="w-full text-xs px-2.5 py-1.5 rounded-md border border-slate-200 bg-white focus:ring-1 focus:ring-slate-900 focus:outline-none"
                       />
                     </div>
                   </div>
                 )}
 
                 {type === "LAB_ACCESS" && (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 rounded-xl bg-slate-50 border border-slate-200">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-3.5 rounded-md bg-slate-50/80 border border-slate-200">
                     <div>
-                      <label className="block text-xs font-semibold text-slate-700 mb-1">
+                      <label className="block text-xs font-medium text-slate-700 mb-1">
                         Laboratory Name & Room
                       </label>
                       <input
@@ -459,11 +459,11 @@ export default function NewRequestPage() {
                         value={formData.labName}
                         onChange={(e) => setFormData({ ...formData, labName: e.target.value })}
                         placeholder="e.g. Turing GPU AI Lab - Room 402"
-                        className="w-full text-xs p-2 rounded-lg border border-slate-300 bg-white"
+                        className="w-full text-xs px-2.5 py-1.5 rounded-md border border-slate-200 bg-white focus:ring-1 focus:ring-slate-900 focus:outline-none"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-semibold text-slate-700 mb-1">
+                      <label className="block text-xs font-medium text-slate-700 mb-1">
                         Required Access Hours
                       </label>
                       <input
@@ -471,16 +471,16 @@ export default function NewRequestPage() {
                         value={formData.accessHours}
                         onChange={(e) => setFormData({ ...formData, accessHours: e.target.value })}
                         placeholder="e.g. 6:00 PM - 10:00 PM Weekdays"
-                        className="w-full text-xs p-2 rounded-lg border border-slate-300 bg-white"
+                        className="w-full text-xs px-2.5 py-1.5 rounded-md border border-slate-200 bg-white focus:ring-1 focus:ring-slate-900 focus:outline-none"
                       />
                     </div>
                   </div>
                 )}
 
                 {type === "MAINTENANCE" && (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 rounded-xl bg-slate-50 border border-slate-200">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-3.5 rounded-md bg-slate-50/80 border border-slate-200">
                     <div>
-                      <label className="block text-xs font-semibold text-slate-700 mb-1">
+                      <label className="block text-xs font-medium text-slate-700 mb-1">
                         Building Block & Room #
                       </label>
                       <input
@@ -488,11 +488,11 @@ export default function NewRequestPage() {
                         value={formData.roomLocation}
                         onChange={(e) => setFormData({ ...formData, roomLocation: e.target.value })}
                         placeholder="e.g. Block C, 3rd Floor, Lab 304"
-                        className="w-full text-xs p-2 rounded-lg border border-slate-300 bg-white"
+                        className="w-full text-xs px-2.5 py-1.5 rounded-md border border-slate-200 bg-white focus:ring-1 focus:ring-slate-900 focus:outline-none"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-semibold text-slate-700 mb-1">
+                      <label className="block text-xs font-medium text-slate-700 mb-1">
                         Issue Category
                       </label>
                       <input
@@ -502,14 +502,14 @@ export default function NewRequestPage() {
                           setFormData({ ...formData, issueDescription: e.target.value })
                         }
                         placeholder="e.g. AC Thermostat / Projector / Ethernet"
-                        className="w-full text-xs p-2 rounded-lg border border-slate-300 bg-white"
+                        className="w-full text-xs px-2.5 py-1.5 rounded-md border border-slate-200 bg-white focus:ring-1 focus:ring-slate-900 focus:outline-none"
                       />
                     </div>
                   </div>
                 )}
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                  <label className="block text-xs font-medium text-slate-700 mb-1.5">
                     Formal Description / Statement *
                   </label>
                   <textarea
@@ -518,16 +518,16 @@ export default function NewRequestPage() {
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     placeholder="Clearly explain the reason for this application, relevant deadlines, and authorization request..."
-                    className="w-full text-xs p-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none bg-white"
+                    className="w-full text-xs px-3 py-2 rounded-md border border-slate-200 focus:ring-1 focus:ring-slate-900 focus:outline-none bg-white text-slate-900"
                   />
                 </div>
 
                 {/* File Upload Section */}
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                  <label className="block text-xs font-medium text-slate-700 mb-1.5">
                     Supporting Documents (PDF, PNG, JPG up to 5MB)
                   </label>
-                  <div className="border-2 border-dashed border-slate-300 hover:border-blue-500 rounded-2xl p-6 text-center bg-slate-50/50 hover:bg-blue-50/20 transition-colors">
+                  <div className="border border-dashed border-slate-300 hover:border-slate-400 rounded-md p-6 text-center bg-slate-50/60 hover:bg-slate-50 transition-colors">
                     <input
                       type="file"
                       id="doc-upload"
@@ -537,11 +537,11 @@ export default function NewRequestPage() {
                       disabled={uploadingFile}
                     />
                     <label htmlFor="doc-upload" className="cursor-pointer block">
-                      <UploadCloud className="w-8 h-8 text-slate-400 mx-auto mb-2" />
-                      <span className="text-xs font-semibold text-blue-600 hover:underline">
+                      <UploadCloud className="w-7 h-7 text-slate-400 mx-auto mb-2" />
+                      <span className="text-xs font-medium text-slate-900 hover:underline">
                         {uploadingFile ? "Uploading document..." : "Click to upload document"}
                       </span>
-                      <p className="text-[11px] text-slate-400 mt-1">
+                      <p className="text-[11px] text-slate-500 mt-1">
                         Attach offer letters, fee receipts, or event proposals
                       </p>
                     </label>
@@ -549,11 +549,11 @@ export default function NewRequestPage() {
 
                   {/* Uploaded Files List */}
                   {uploadedAttachments.length > 0 && (
-                    <div className="mt-3 space-y-2">
+                    <div className="mt-3 space-y-1.5">
                       {uploadedAttachments.map((att) => (
                         <div
                           key={att._id}
-                          className="flex items-center justify-between p-2.5 rounded-xl bg-slate-100/80 border border-slate-200 text-xs"
+                          className="flex items-center justify-between p-2 rounded-md bg-slate-50 border border-slate-200 text-xs"
                         >
                           <div className="flex items-center gap-2 truncate">
                             <FileCheck className="w-4 h-4 text-emerald-600 shrink-0" />
@@ -577,10 +577,10 @@ export default function NewRequestPage() {
 
                 <div className="flex items-center justify-between pt-4 border-t border-slate-100">
                   <Button variant="outline" onClick={() => setCurrentStep(1)}>
-                    <ArrowLeft className="w-4 h-4 mr-1" /> Back
+                    <ArrowLeft className="w-3.5 h-3.5 mr-1" /> Back
                   </Button>
                   <Button onClick={() => setCurrentStep(3)}>
-                    Review Summary <ArrowRight className="w-4 h-4 ml-1" />
+                    Review Summary <ArrowRight className="w-3.5 h-3.5 ml-1" />
                   </Button>
                 </div>
               </div>
@@ -589,47 +589,47 @@ export default function NewRequestPage() {
 
           {/* STEP 3: REVIEW & SUBMIT */}
           {currentStep === 3 && (
-            <div className="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-xs space-y-6">
+            <div className="bg-white rounded-lg border border-slate-200/90 p-5 sm:p-6 space-y-6">
               <div>
-                <h3 className="text-lg font-bold text-slate-900">Review Application</h3>
-                <p className="text-xs text-slate-500">
+                <h3 className="text-base font-semibold text-slate-900">Review Application</h3>
+                <p className="text-xs text-slate-500 mt-0.5">
                   Double check all information before sending to faculty reviewer
                 </p>
               </div>
 
-              <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3 text-xs">
+              <div className="p-4 rounded-md bg-slate-50/80 border border-slate-200 space-y-3 text-xs">
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                   <div>
                     <span className="text-slate-400 block text-[11px]">Type:</span>
-                    <span className="font-semibold text-slate-900">{type.replace(/_/g, " ")}</span>
+                    <span className="font-medium text-slate-900">{type.replace(/_/g, " ")}</span>
                   </div>
                   <div>
                     <span className="text-slate-400 block text-[11px]">Reviewing Faculty:</span>
-                    <span className="font-semibold text-indigo-700">
+                    <span className="font-medium text-slate-900">
                       {facultyList.find((f) => f._id === assignedFacultyId)?.name || "Auto-assigned Department Faculty"}
                     </span>
                   </div>
                   <div>
                     <span className="text-slate-400 block text-[11px]">Priority:</span>
-                    <span className="font-semibold text-slate-900">{priority}</span>
+                    <span className="font-medium text-slate-900">{priority}</span>
                   </div>
                 </div>
 
                 <div>
                   <span className="text-slate-400 block text-[11px]">Application Title:</span>
-                  <span className="font-semibold text-slate-900 text-sm">{title}</span>
+                  <span className="font-semibold text-slate-900 text-xs sm:text-sm">{title}</span>
                 </div>
 
                 <div>
                   <span className="text-slate-400 block text-[11px]">Description:</span>
-                  <p className="text-slate-700 whitespace-pre-line mt-1 bg-white p-2.5 rounded-lg border border-slate-200">
+                  <p className="text-slate-700 whitespace-pre-line mt-1 bg-white p-2.5 rounded-md border border-slate-200">
                     {description}
                   </p>
                 </div>
 
                 <div>
                   <span className="text-slate-400 block text-[11px]">Attached Documents:</span>
-                  <span className="font-semibold text-slate-900">
+                  <span className="font-medium text-slate-900">
                     {uploadedAttachments.length} file(s) attached
                   </span>
                 </div>
@@ -648,7 +648,7 @@ export default function NewRequestPage() {
 
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-4 border-t border-slate-100">
                 <Button variant="outline" onClick={() => setCurrentStep(2)} className="w-full sm:w-auto">
-                  <ArrowLeft className="w-4 h-4 mr-1" /> Edit Details
+                  <ArrowLeft className="w-3.5 h-3.5 mr-1" /> Edit Details
                 </Button>
 
                 <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
@@ -684,8 +684,8 @@ export default function NewRequestPage() {
             onApplyImprovedDesc={(d) => setDescription(d)}
           />
 
-          <div className="bg-slate-900 rounded-2xl p-5 text-slate-300 text-xs space-y-3 border border-slate-800">
-            <span className="font-bold text-white flex items-center gap-1.5">
+          <div className="bg-slate-900 rounded-lg p-5 text-slate-300 text-xs space-y-2.5 border border-slate-800">
+            <span className="font-semibold text-white flex items-center gap-1.5">
               <CheckCircle2 className="w-4 h-4 text-emerald-400" />
               Submission Workflow Guarantees
             </span>

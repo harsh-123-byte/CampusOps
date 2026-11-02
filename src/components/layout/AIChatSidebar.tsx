@@ -398,18 +398,11 @@ export function AIChatSidebar({ isOpen, onClose, onOpen }: AIChatSidebarProps) {
       {!isOpen && (
         <button
           onClick={onOpen || onClose}
-          className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 flex items-center gap-2 p-3 sm:px-4 sm:py-3 rounded-full bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 hover:from-blue-700 hover:to-indigo-800 text-white shadow-xl shadow-blue-600/30 hover:shadow-blue-600/50 hover:scale-105 active:scale-95 transition-all duration-200 group border border-white/20 cursor-pointer"
-          title="Open Campus AI Copilot"
+          className="fixed bottom-5 right-5 z-40 flex items-center gap-2 p-2.5 sm:px-3 sm:py-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-white shadow-md border border-slate-800 text-xs font-medium transition-colors cursor-pointer"
+          title="Open Campus Copilot"
         >
-          <div className="relative">
-            <Bot className="w-5 h-5 text-white" />
-            <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-amber-300"></span>
-            </span>
-          </div>
-          <span className="hidden sm:inline text-xs font-bold tracking-wide">Campus AI Copilot</span>
-          <Sparkles className="w-4 h-4 text-amber-300 group-hover:rotate-12 transition-transform hidden sm:inline" />
+          <Bot className="w-4 h-4 text-blue-400" />
+          <span className="hidden sm:inline">Campus Copilot</span>
         </button>
       )}
 
@@ -417,42 +410,42 @@ export function AIChatSidebar({ isOpen, onClose, onOpen }: AIChatSidebarProps) {
       {isOpen && (
         <div
           onClick={onClose}
-          className="fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-40 lg:hidden transition-opacity"
+          className="fixed inset-0 bg-slate-950/40 backdrop-blur-xs z-40 lg:hidden transition-opacity"
         />
       )}
 
       {/* Right Sidebar Container */}
       <aside
         className={cn(
-          "bg-white border-l border-slate-200/90 flex flex-col h-full z-50 shrink-0 shadow-2xl lg:shadow-none transition-all duration-300 ease-in-out",
+          "bg-white border-l border-slate-200 flex flex-col h-full z-50 shrink-0 shadow-xl lg:shadow-none transition-all duration-200 ease-in-out",
           // Mobile positioning: fixed slide-over
           "fixed inset-y-0 right-0 w-full sm:w-[400px] lg:relative lg:inset-auto",
           // Desktop positioning: clean dockable right sidebar
           isOpen
-            ? "translate-x-0 lg:w-[380px] xl:w-[420px]"
+            ? "translate-x-0 lg:w-[380px] xl:w-[400px]"
             : "translate-x-full lg:hidden lg:w-0 overflow-hidden"
         )}
       >
         {/* Header */}
-        <div className="h-16 px-4 flex items-center justify-between border-b border-slate-200 bg-white/95 backdrop-blur-xs shrink-0">
-          <div className="flex items-center gap-3 min-w-0">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center shadow-md shadow-blue-500/20 shrink-0">
-              <Bot className="w-5 h-5" />
+        <div className="h-14 px-4 flex items-center justify-between border-b border-slate-200 bg-white shrink-0">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="w-7 h-7 rounded-md bg-slate-900 text-blue-400 flex items-center justify-center shrink-0">
+              <Bot className="w-4 h-4" />
             </div>
             <div className="min-w-0">
               <div className="flex items-center gap-1.5">
-                <span className="font-bold text-slate-900 text-sm truncate">Campus AI Copilot</span>
-                <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                  Active
+                <span className="font-semibold text-slate-900 text-sm truncate">Campus Copilot</span>
+                <span className="inline-flex items-center gap-1 px-1.5 py-0.2 rounded text-[10px] font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+                  Ready
                 </span>
               </div>
-              <p className="text-[11px] text-slate-500 truncate">
+              <p className="text-[11px] text-slate-500 truncate leading-none mt-0.5">
                 {user?.role === "STUDENT"
                   ? "Student Concierge"
                   : user?.role === "FACULTY"
                   ? "Faculty Review Copilot"
-                  : "Admin Operations Assistant"}
+                  : "Operations Assistant"}
               </p>
             </div>
           </div>
@@ -460,14 +453,14 @@ export function AIChatSidebar({ isOpen, onClose, onOpen }: AIChatSidebarProps) {
           <div className="flex items-center gap-1">
             <button
               onClick={handleClearChat}
-              className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+              className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-md transition-colors cursor-pointer"
               title="Reset conversation"
             >
               <RotateCcw className="w-4 h-4" />
             </button>
             <button
               onClick={onClose}
-              className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+              className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-md transition-colors cursor-pointer"
               title="Close panel"
             >
               <PanelRightClose className="w-4 h-4 hidden lg:block" />
@@ -477,48 +470,47 @@ export function AIChatSidebar({ isOpen, onClose, onOpen }: AIChatSidebarProps) {
         </div>
 
         {/* Quick Topics Banner */}
-        <div className="px-4 py-2 bg-gradient-to-r from-blue-50/70 via-indigo-50/40 to-slate-50 border-b border-slate-100 flex items-center justify-between text-[11px] text-slate-600 shrink-0">
-          <span className="flex items-center gap-1.5 font-medium text-slate-700">
-            <Sparkles className="w-3.5 h-3.5 text-blue-600" />
-            Ask about: Documents, Timeline, Scholarships
+        <div className="px-4 py-2 bg-slate-50 border-b border-slate-100 flex items-center justify-between text-[11px] text-slate-500 shrink-0">
+          <span className="font-medium text-slate-600 truncate">
+            Guidance for documents, timelines & policies
           </span>
-          <span className="text-[10px] uppercase font-bold text-blue-600 tracking-wider">
+          <span className="text-[10px] font-medium text-slate-400 uppercase tracking-wider shrink-0">
             {user?.role}
           </span>
         </div>
 
         {/* Messages Scroll Area */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50/50">
+        <div className="flex-1 overflow-y-auto p-4 space-y-3.5 bg-slate-50/40">
           {messages.map((msg) => {
             const isUser = msg.role === "user";
 
             return (
               <div
                 key={msg.id}
-                className={cn("flex flex-col gap-1.5", isUser ? "items-end" : "items-start")}
+                className={cn("flex flex-col gap-1", isUser ? "items-end" : "items-start")}
               >
                 <div
                   className={cn(
-                    "max-w-[88%] rounded-2xl px-3.5 py-2.5 shadow-2xs relative group transition-all",
+                    "max-w-[88%] rounded-lg px-3.5 py-2.5 text-xs sm:text-[13px] leading-relaxed relative group",
                     isUser
-                      ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-br-xs"
-                      : "bg-white text-slate-800 border border-slate-200/80 rounded-bl-xs"
+                      ? "bg-slate-900 text-white"
+                      : "bg-white text-slate-800 border border-slate-200/90 shadow-2xs"
                   )}
                 >
                   {isUser ? (
-                    <p className="text-xs sm:text-sm whitespace-pre-wrap leading-relaxed">{msg.content}</p>
+                    <p className="whitespace-pre-wrap">{msg.content}</p>
                   ) : (
                     <div>
                       <FormattedChatText content={msg.content} />
 
                       {/* Copy action on assistant responses */}
-                      <div className="mt-2.5 pt-2 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-400">
-                        <span className="text-[10px] text-slate-400 font-medium">
-                          {msg.provider || "CampusOps Intelligence"}
+                      <div className="mt-2 pt-2 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-400">
+                        <span className="font-medium">
+                          {msg.provider || "Campus Intelligence"}
                         </span>
                         <button
                           onClick={() => handleCopy(msg.id, msg.content)}
-                          className="flex items-center gap-1 text-slate-400 hover:text-slate-700 transition-colors p-1 rounded"
+                          className="flex items-center gap-1 text-slate-400 hover:text-slate-700 transition-colors p-0.5 rounded cursor-pointer"
                           title="Copy response"
                         >
                           {copiedId === msg.id ? (
@@ -545,15 +537,15 @@ export function AIChatSidebar({ isOpen, onClose, onOpen }: AIChatSidebarProps) {
 
                 {/* Suggested prompt chips underneath assistant messages */}
                 {!isUser && msg.suggestions && msg.suggestions.length > 0 && (
-                  <div className="mt-1 flex flex-wrap gap-1.5 max-w-[95%]">
+                  <div className="mt-0.5 flex flex-wrap gap-1.5 max-w-[95%]">
                     {msg.suggestions.map((sug, sIdx) => (
                       <button
                         key={sIdx}
                         onClick={() => handleSendMessage(sug)}
                         disabled={isLoading}
-                        className="text-left text-[11px] leading-tight px-2.5 py-1 rounded-lg bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-700 border border-slate-200 hover:border-blue-300 transition-all shadow-2xs flex items-center gap-1 disabled:opacity-50"
+                        className="text-left text-[11px] leading-tight px-2.5 py-1 rounded-md bg-white hover:bg-slate-50 text-slate-700 hover:text-slate-900 border border-slate-200/90 transition-colors shadow-2xs flex items-center gap-1 disabled:opacity-50 cursor-pointer"
                       >
-                        <ChevronRight className="w-3 h-3 text-blue-500 shrink-0" />
+                        <ChevronRight className="w-3 h-3 text-slate-400 shrink-0" />
                         <span>{sug}</span>
                       </button>
                     ))}
@@ -566,14 +558,9 @@ export function AIChatSidebar({ isOpen, onClose, onOpen }: AIChatSidebarProps) {
           {/* Typing/Thinking Indicator */}
           {isLoading && (
             <div className="flex items-start gap-2 max-w-[85%]">
-              <div className="bg-white border border-slate-200 rounded-2xl rounded-bl-xs px-4 py-3 shadow-2xs flex items-center gap-2.5">
-                <div className="w-5 h-5 rounded-full bg-blue-600 text-white flex items-center justify-center animate-spin">
-                  <Loader2 className="w-3.5 h-3.5" />
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-xs font-medium text-slate-700">Campus AI is thinking...</span>
-                  <span className="text-[10px] text-slate-400">Checking campus policies & real-time data</span>
-                </div>
+              <div className="bg-white border border-slate-200 rounded-lg px-3.5 py-2.5 shadow-2xs flex items-center gap-2">
+                <Loader2 className="w-3.5 h-3.5 text-blue-600 animate-spin shrink-0" />
+                <span className="text-xs text-slate-600">Retrieving campus guidance...</span>
               </div>
             </div>
           )}
@@ -582,37 +569,37 @@ export function AIChatSidebar({ isOpen, onClose, onOpen }: AIChatSidebarProps) {
         </div>
 
         {/* Quick Category Action Chips */}
-        <div className="px-3 pt-2 pb-1 bg-white border-t border-slate-100 flex items-center gap-1.5 overflow-x-auto no-scrollbar shrink-0">
+        <div className="px-3 pt-2 pb-1.5 bg-white border-t border-slate-100 flex items-center gap-1.5 overflow-x-auto no-scrollbar shrink-0">
           <button
             onClick={() => handleSendMessage("What documents are required for Scholarship?")}
             disabled={isLoading}
-            className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-100 hover:bg-blue-50 hover:text-blue-600 text-[11px] font-medium text-slate-600 shrink-0 transition-colors"
+            className="flex items-center gap-1 px-2.5 py-1 rounded-md bg-slate-50 hover:bg-slate-100 border border-slate-200/70 text-[11px] font-medium text-slate-700 shrink-0 transition-colors cursor-pointer"
           >
-            <GraduationCap className="w-3 h-3 text-indigo-500" />
+            <GraduationCap className="w-3 h-3 text-slate-500" />
             Scholarship
           </button>
           <button
             onClick={() => handleSendMessage("What is the timeline and SLA for Bonafide and NOC?")}
             disabled={isLoading}
-            className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-100 hover:bg-blue-50 hover:text-blue-600 text-[11px] font-medium text-slate-600 shrink-0 transition-colors"
+            className="flex items-center gap-1 px-2.5 py-1 rounded-md bg-slate-50 hover:bg-slate-100 border border-slate-200/70 text-[11px] font-medium text-slate-700 shrink-0 transition-colors cursor-pointer"
           >
-            <Clock className="w-3 h-3 text-amber-500" />
-            Timeline / SLAs
+            <Clock className="w-3 h-3 text-slate-500" />
+            Timelines
           </button>
           <button
             onClick={() => handleSendMessage("Check the status of my recent requests")}
             disabled={isLoading}
-            className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-100 hover:bg-blue-50 hover:text-blue-600 text-[11px] font-medium text-slate-600 shrink-0 transition-colors"
+            className="flex items-center gap-1 px-2.5 py-1 rounded-md bg-slate-50 hover:bg-slate-100 border border-slate-200/70 text-[11px] font-medium text-slate-700 shrink-0 transition-colors cursor-pointer"
           >
-            <Search className="w-3 h-3 text-emerald-500" />
+            <Search className="w-3 h-3 text-slate-500" />
             My Requests
           </button>
           <button
             onClick={() => handleSendMessage("What documents do I need for Bonafide and NOC?")}
             disabled={isLoading}
-            className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-100 hover:bg-blue-50 hover:text-blue-600 text-[11px] font-medium text-slate-600 shrink-0 transition-colors"
+            className="flex items-center gap-1 px-2.5 py-1 rounded-md bg-slate-50 hover:bg-slate-100 border border-slate-200/70 text-[11px] font-medium text-slate-700 shrink-0 transition-colors cursor-pointer"
           >
-            <FileText className="w-3 h-3 text-blue-500" />
+            <FileText className="w-3 h-3 text-slate-500" />
             Documents
           </button>
         </div>
@@ -632,23 +619,23 @@ export function AIChatSidebar({ isOpen, onClose, onOpen }: AIChatSidebarProps) {
                 type="text"
                 value={inputMessage}
                 onChange={(e) => setInputMessage(e.target.value)}
-                placeholder="Ask about documents, timeline, scholarships..."
+                placeholder="Ask about documents, timelines, approvals..."
                 disabled={isLoading}
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-3.5 pr-3 py-2.5 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:outline-hidden focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all disabled:opacity-60"
+                className="w-full bg-slate-50/80 border border-slate-200 rounded-md pl-3 pr-3 py-2 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:outline-hidden focus:bg-white focus:ring-1 focus:ring-slate-900 focus:border-slate-900 transition-colors disabled:opacity-60"
               />
             </div>
             <button
               type="submit"
               disabled={!inputMessage.trim() || isLoading}
-              className="p-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white disabled:opacity-40 disabled:hover:bg-blue-600 transition-all shadow-xs shrink-0"
+              className="p-2 rounded-md bg-slate-900 hover:bg-slate-800 text-white disabled:opacity-40 transition-colors shrink-0 cursor-pointer"
               title="Send query"
             >
-              <Send className="w-4 h-4" />
+              <Send className="w-3.5 h-3.5" />
             </button>
           </form>
-          <div className="mt-1.5 flex items-center justify-between text-[10px] text-slate-400 px-1">
-            <span>Powered by Gemini & CampusOps</span>
-            <span>Press Enter to send</span>
+          <div className="mt-1.5 flex items-center justify-between text-[10px] text-slate-400 px-0.5">
+            <span>Powered by Gemini</span>
+            <span>Enter to send</span>
           </div>
         </div>
       </aside>

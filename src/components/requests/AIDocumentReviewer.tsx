@@ -59,21 +59,21 @@ export function AIDocumentReviewer({ onApplyExtraction }: AIDocumentReviewerProp
   };
 
   return (
-    <div className="bg-gradient-to-br from-indigo-50/50 via-white to-blue-50/30 rounded-2xl border border-indigo-100 p-5 shadow-xs">
+    <div className="bg-white rounded-lg border border-slate-200/90 p-4 shadow-2xs">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center shadow-xs">
-            <Sparkles className="w-4 h-4" />
+          <div className="w-7 h-7 rounded-md bg-slate-900 text-blue-400 flex items-center justify-center shrink-0">
+            <FileText className="w-4 h-4" />
           </div>
           <div>
-            <h4 className="text-sm font-semibold text-slate-900">AI Document Extraction</h4>
-            <p className="text-xs text-slate-500">
-              Paste offer letter, bonafide draft, or certificate text for instant auto-fill
+            <h4 className="text-xs sm:text-sm font-semibold text-slate-900">Document Auto-Extraction</h4>
+            <p className="text-[11px] text-slate-500">
+              Paste offer letter, bonafide draft, or certificate text for instant field populating
             </p>
           </div>
         </div>
         {isFallback && (
-          <span className="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full font-medium">
+          <span className="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded font-medium">
             Rule Fallback Mode
           </span>
         )}
@@ -84,8 +84,8 @@ export function AIDocumentReviewer({ onApplyExtraction }: AIDocumentReviewerProp
           rows={3}
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
-          placeholder="Paste certificate or document text here (e.g. 'This is to certify that Aiden Scott, Reg No: 2024CS1042, is selected for Google Summer Internship...')"
-          className="w-full text-xs p-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white"
+          placeholder="Paste document text here (e.g. 'This is to certify that student, Reg No: 2024CS1042, is selected for Google Internship...')"
+          className="w-full text-xs p-2.5 rounded-md border border-slate-200 focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900 bg-white"
         />
 
         <div className="flex justify-between items-center">
@@ -108,47 +108,45 @@ export function AIDocumentReviewer({ onApplyExtraction }: AIDocumentReviewerProp
             size="sm"
             onClick={handleExtract}
             loading={loading}
-            className="bg-indigo-600 hover:bg-indigo-700"
           >
-            <Sparkles className="w-3.5 h-3.5" />
-            Extract with AI
+            Extract Fields
           </Button>
         </div>
 
         {extractionResult && (
-          <div className="mt-4 p-4 rounded-xl bg-white border border-indigo-100 shadow-xs animate-in fade-in duration-200">
-            <div className="flex items-center justify-between mb-3 pb-2 border-b border-slate-100">
-              <span className="text-xs font-semibold text-slate-800 flex items-center gap-1.5">
-                <FileText className="w-3.5 h-3.5 text-indigo-600" />
-                Extracted Information
+          <div className="mt-3 p-3.5 rounded-md bg-slate-50 border border-slate-200/90 shadow-2xs animate-in fade-in duration-150">
+            <div className="flex items-center justify-between mb-2.5 pb-2 border-b border-slate-200/60">
+              <span className="text-xs font-semibold text-slate-900 flex items-center gap-1.5">
+                <FileText className="w-3.5 h-3.5 text-blue-600" />
+                Extracted Fields
               </span>
-              <span className="text-[11px] font-medium text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">
+              <span className="text-[11px] font-medium text-emerald-700 bg-emerald-50 px-2 py-0.2 rounded border border-emerald-200">
                 Confidence: {Math.round((extractionResult.confidenceScore || 0.85) * 100)}%
               </span>
             </div>
 
-            <div className="grid grid-cols-2 gap-3 text-xs mb-3">
+            <div className="grid grid-cols-2 gap-2 text-xs mb-3">
               <div>
-                <span className="text-slate-400 block text-[10px]">Identified Name</span>
-                <span className="font-semibold text-slate-800">
+                <span className="text-slate-400 block text-[10px] uppercase">Identified Name</span>
+                <span className="font-medium text-slate-800">
                   {extractionResult.studentName || "N/A"}
                 </span>
               </div>
               <div>
-                <span className="text-slate-400 block text-[10px]">Registration / ID</span>
-                <span className="font-semibold text-slate-800">
+                <span className="text-slate-400 block text-[10px] uppercase">Registration / ID</span>
+                <span className="font-medium text-slate-800 font-mono">
                   {extractionResult.registrationNumber || "N/A"}
                 </span>
               </div>
               <div>
-                <span className="text-slate-400 block text-[10px]">Document Type</span>
-                <span className="font-semibold text-slate-800">
+                <span className="text-slate-400 block text-[10px] uppercase">Document Type</span>
+                <span className="font-medium text-slate-800">
                   {extractionResult.documentType || "N/A"}
                 </span>
               </div>
               <div>
-                <span className="text-slate-400 block text-[10px]">Document Date</span>
-                <span className="font-semibold text-slate-800">
+                <span className="text-slate-400 block text-[10px] uppercase">Document Date</span>
+                <span className="font-medium text-slate-800">
                   {extractionResult.date || "N/A"}
                 </span>
               </div>
@@ -156,7 +154,7 @@ export function AIDocumentReviewer({ onApplyExtraction }: AIDocumentReviewerProp
 
             {extractionResult.keyDetails?.length > 0 && (
               <div className="mb-3">
-                <span className="text-[10px] text-slate-400 block mb-1">Key Verified Highlights:</span>
+                <span className="text-[10px] text-slate-400 uppercase block mb-1">Key Details:</span>
                 <ul className="list-disc list-inside text-[11px] text-slate-600 space-y-0.5">
                   {extractionResult.keyDetails.map((k: string, idx: number) => (
                     <li key={idx}>{k}</li>
@@ -173,7 +171,7 @@ export function AIDocumentReviewer({ onApplyExtraction }: AIDocumentReviewerProp
               className="w-full text-xs justify-center"
             >
               <Check className="w-3.5 h-3.5" />
-              Apply Extracted Details to Form
+              Apply Details to Form
             </Button>
           </div>
         )}

@@ -26,37 +26,29 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 flex flex-col justify-center items-center p-4 relative overflow-hidden">
-      {/* Background gradients */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-gradient-to-b from-blue-600/20 via-indigo-600/10 to-transparent blur-3xl pointer-events-none" />
-
+    <div className="min-h-screen bg-slate-950 flex flex-col justify-center items-center p-4 relative">
       <div className="w-full max-w-md relative z-10">
         {/* Brand */}
-        <div className="text-center mb-8">
-          <Link href="/" className="inline-flex items-center gap-2.5 mb-3 group">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-white shadow-lg shadow-blue-500/25 group-hover:scale-105 transition-transform">
-              <Sparkles className="w-5 h-5" />
+        <div className="text-center mb-6">
+          <Link href="/" className="inline-flex items-center gap-2.5 mb-2 group">
+            <div className="w-8 h-8 rounded-md bg-white text-slate-950 flex items-center justify-center font-bold text-xs tracking-tight">
+              CO
             </div>
-            <span className="text-2xl font-bold text-white tracking-tight">CampusOps</span>
+            <span className="text-xl font-bold text-white tracking-tight">CampusOps</span>
           </Link>
-          <p className="text-sm text-slate-400">Campus Workflow & Approvals Portal</p>
+          <p className="text-xs text-slate-400">Campus Workflow & Approvals Portal</p>
         </div>
 
         {/* Login Card */}
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-2xl">
-          <div className="flex items-center gap-2 mb-6">
-            <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-400">
-              <Lock className="w-4 h-4" />
-            </div>
-            <div>
-              <h2 className="text-lg font-semibold text-white">Sign in to your account</h2>
-              <p className="text-xs text-slate-400">Enter your credentials to access your dashboard</p>
-            </div>
+        <div className="bg-slate-900 border border-slate-800 rounded-lg p-6 sm:p-8 shadow-xl">
+          <div className="mb-6">
+            <h2 className="text-base font-semibold text-white">Sign in to your account</h2>
+            <p className="text-xs text-slate-400 mt-0.5">Enter your credentials to access your dashboard</p>
           </div>
 
           {/* Error Message */}
           {loginFailed && (
-            <div className="mb-4 p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-xs text-rose-300">
+            <div className="mb-4 p-3 rounded-md bg-rose-500/10 border border-rose-500/20 text-xs text-rose-300">
               <p className="font-semibold text-rose-200">Invalid email or password</p>
               <p className="text-[11px] text-slate-400 mt-0.5">
                 Please check your email and password, or create an account if you haven&apos;t registered yet.
@@ -73,7 +65,7 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="name@college.edu"
-                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800/80 border border-slate-700 text-sm text-white placeholder-slate-500 focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                className="w-full px-3 py-2 rounded-md bg-slate-950 border border-slate-800 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-400 focus:border-slate-700 transition-colors"
               />
             </div>
 
@@ -87,20 +79,20 @@ export default function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800/80 border border-slate-700 text-sm text-white placeholder-slate-500 focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                className="w-full px-3 py-2 rounded-md bg-slate-950 border border-slate-800 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-400 focus:border-slate-700 transition-colors"
               />
             </div>
 
             <Button
               type="submit"
               loading={loading}
-              className="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium text-sm transition-all shadow-md shadow-blue-600/30 mt-2 cursor-pointer"
+              className="w-full mt-2"
             >
-              Sign In <ArrowRight className="w-4 h-4 ml-1" />
+              Sign In <ArrowRight className="w-3.5 h-3.5 ml-1.5" />
             </Button>
           </form>
 
-          <div className="mt-6 pt-6 border-t border-slate-800/80 text-center">
+          <div className="mt-6 pt-5 border-t border-slate-800 text-center">
             <p className="text-xs text-slate-400">
               Don&apos;t have an account?{" "}
               <Link href="/register" className="text-blue-400 hover:text-blue-300 font-medium">

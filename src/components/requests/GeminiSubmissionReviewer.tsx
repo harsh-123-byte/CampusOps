@@ -132,25 +132,24 @@ export function GeminiSubmissionReviewer({
   const isWarning = score >= 60 && score < 85;
 
   return (
-    <div className="rounded-2xl border border-indigo-200/80 bg-gradient-to-br from-indigo-50/70 via-white to-blue-50/50 p-6 shadow-sm space-y-5">
+    <div className="rounded-lg border border-slate-200/90 bg-white p-5 shadow-2xs space-y-4">
       {/* Header Banner */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-indigo-100">
-        <div className="flex items-start gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-blue-500 text-white flex items-center justify-center shadow-md shadow-indigo-200 shrink-0 mt-0.5">
-            <Sparkles className="w-5 h-5 animate-pulse" />
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
+        <div className="flex items-start gap-2.5">
+          <div className="w-7 h-7 rounded-md bg-slate-900 text-blue-400 flex items-center justify-center shrink-0 mt-0.5">
+            <Sparkles className="w-4 h-4" />
           </div>
           <div>
             <div className="flex items-center gap-2 flex-wrap">
-              <h4 className="text-base font-bold text-slate-900">
-                Gemini AI Pre-Submission Reviewer
+              <h4 className="text-sm font-semibold text-slate-900">
+                Pre-Submission Verification
               </h4>
-              <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-700 border border-indigo-200 flex items-center gap-1">
-                <ShieldCheck className="w-3 h-3 text-indigo-600" />
+              <span className="text-[10px] font-medium px-2 py-0.2 rounded bg-slate-100 text-slate-600 border border-slate-200">
                 {provider}
               </span>
             </div>
-            <p className="text-xs text-slate-600 mt-1 font-medium">
-              Before submitting, use our Gemini AI Reviewer to verify required attachments and prevent application delays.
+            <p className="text-xs text-slate-500 mt-0.5">
+              Automated document and requirements verification to prevent approval delays
             </p>
           </div>
         </div>
@@ -161,66 +160,66 @@ export function GeminiSubmissionReviewer({
           size="sm"
           onClick={performReview}
           loading={loading}
-          className="text-xs bg-white border-indigo-200 hover:bg-indigo-50/60 text-indigo-700 shadow-2xs shrink-0 self-start sm:self-center"
+          className="text-xs shrink-0 self-start sm:self-center"
         >
           <RefreshCw className={`w-3.5 h-3.5 mr-1.5 ${loading ? "animate-spin" : ""}`} />
-          Re-verify Application
+          Re-verify
         </Button>
       </div>
 
       {loading && !review && (
-        <div className="py-8 flex flex-col items-center justify-center gap-2 text-slate-500">
-          <Loader2 className="w-6 h-6 animate-spin text-indigo-600" />
-          <p className="text-xs font-medium">Gemini AI is analyzing attached documents and requirements...</p>
+        <div className="py-6 flex flex-col items-center justify-center gap-2 text-slate-500">
+          <Loader2 className="w-5 h-5 animate-spin text-blue-600" />
+          <p className="text-xs">Analyzing attached documents and required criteria...</p>
         </div>
       )}
 
       {review && (
-        <div className="space-y-5">
+        <div className="space-y-4">
           {/* Readiness Score Card */}
-          <div className="p-4 rounded-xl bg-white border border-indigo-100/90 shadow-2xs">
+          <div className="p-3.5 rounded-md bg-slate-50 border border-slate-200/80">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
-                <span className="text-[11px] font-bold tracking-wider uppercase text-slate-400 block mb-1">
-                  Overall Readiness Score
+                <span className="text-[10px] font-medium uppercase tracking-wider text-slate-400 block mb-0.5">
+                  Readiness Score
                 </span>
                 <div className="flex items-baseline gap-2">
                   <span
-                    className={`text-3xl font-extrabold ${
+                    className={`text-2xl font-bold tracking-tight ${
                       isReady ? "text-emerald-600" : isWarning ? "text-amber-600" : "text-rose-600"
                     }`}
                   >
                     {review.readinessScore}%
                   </span>
                   <span
-                    className={`text-xs font-semibold px-2.5 py-1 rounded-full ${
+                    className={`text-[11px] font-medium px-2 py-0.5 rounded ${
                       isReady
-                        ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                        ? "bg-emerald-50 text-emerald-800 border border-emerald-200"
                         : isWarning
-                        ? "bg-amber-50 text-amber-700 border border-amber-200"
-                        : "bg-rose-50 text-rose-700 border border-rose-200"
+                        ? "bg-amber-50 text-amber-800 border border-amber-200"
+                        : "bg-rose-50 text-rose-800 border border-rose-200"
                     }`}
                   >
                     {isReady
-                      ? "Ready for Expedited Approval"
+                      ? "Ready for Approval"
                       : isWarning
                       ? "Attention Recommended"
-                      : "Incomplete - Delay Risk High"}
+                      : "Incomplete Requirements"}
                   </span>
                 </div>
               </div>
 
               <div className="sm:text-right max-w-md">
-                <p className="text-xs text-slate-600 leading-relaxed font-medium">
+                <p className="text-xs text-slate-600 leading-relaxed">
                   {review.summary}
                 </p>
               </div>
             </div>
 
             {/* Progress Bar */}
-            <div className="w-full bg-slate-100 rounded-full h-2.5 mt-3 overflow-hidden">
+            <div className="w-full bg-slate-200 rounded-full h-1.5 mt-3 overflow-hidden">
               <div
-                className={`h-2.5 rounded-full transition-all duration-500 ${
+                className={`h-1.5 rounded-full transition-all duration-300 ${
                   isReady ? "bg-emerald-500" : isWarning ? "bg-amber-500" : "bg-rose-500"
                 }`}
                 style={{ width: `${Math.max(10, Math.min(100, review.readinessScore))}%` }}
@@ -229,20 +228,20 @@ export function GeminiSubmissionReviewer({
           </div>
 
           {/* Verification Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {/* Verified Attachments & Checks */}
-            <div className="p-4 rounded-xl bg-white border border-emerald-100 shadow-2xs space-y-2.5">
-              <div className="flex items-center gap-2 pb-2 border-b border-emerald-50">
-                <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                <h5 className="text-xs font-bold text-slate-800">
-                  Verified Requirements & Attachments ({review.verifiedAttachments?.length || 0})
+            <div className="p-3 rounded-md bg-white border border-slate-200 shadow-2xs space-y-2">
+              <div className="flex items-center gap-1.5 pb-1.5 border-b border-slate-100">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                <h5 className="text-xs font-semibold text-slate-900">
+                  Verified Requirements ({review.verifiedAttachments?.length || 0})
                 </h5>
               </div>
               {review.verifiedAttachments && review.verifiedAttachments.length > 0 ? (
-                <ul className="space-y-1.5 text-xs text-slate-700">
+                <ul className="space-y-1 text-xs text-slate-600">
                   {review.verifiedAttachments.map((item, idx) => (
-                    <li key={idx} className="flex items-start gap-2">
-                      <span className="text-emerald-500 font-bold">✓</span>
+                    <li key={idx} className="flex items-start gap-1.5">
+                      <span className="text-emerald-600 font-bold">✓</span>
                       <span>{item}</span>
                     </li>
                   ))}
@@ -254,38 +253,38 @@ export function GeminiSubmissionReviewer({
 
             {/* Missing Attachments & Information */}
             <div
-              className={`p-4 rounded-xl bg-white border shadow-2xs space-y-2.5 ${
+              className={`p-3 rounded-md bg-white border shadow-2xs space-y-2 ${
                 review.missingAttachments && review.missingAttachments.length > 0
                   ? "border-amber-200 bg-amber-50/20"
                   : "border-slate-200"
               }`}
             >
-              <div className="flex items-center justify-between pb-2 border-b border-amber-100">
-                <div className="flex items-center gap-2">
+              <div className="flex items-center justify-between pb-1.5 border-b border-slate-100">
+                <div className="flex items-center gap-1.5">
                   <AlertTriangle
-                    className={`w-4 h-4 ${
+                    className={`w-3.5 h-3.5 ${
                       review.missingAttachments && review.missingAttachments.length > 0
                         ? "text-amber-600"
                         : "text-slate-400"
                     }`}
                   />
-                  <h5 className="text-xs font-bold text-slate-800">
+                  <h5 className="text-xs font-semibold text-slate-900">
                     Missing Required Items ({review.missingAttachments?.length || 0})
                   </h5>
                 </div>
               </div>
 
               {review.missingAttachments && review.missingAttachments.length > 0 ? (
-                <ul className="space-y-1.5 text-xs text-amber-900">
+                <ul className="space-y-1 text-xs text-amber-900">
                   {review.missingAttachments.map((item, idx) => (
-                    <li key={idx} className="flex items-start gap-2">
+                    <li key={idx} className="flex items-start gap-1.5">
                       <span className="text-amber-500 font-bold">•</span>
                       <span>{item}</span>
                     </li>
                   ))}
                 </ul>
               ) : (
-                <p className="text-xs text-emerald-600 font-medium flex items-center gap-1.5">
+                <p className="text-xs text-emerald-700 font-medium flex items-center gap-1.5">
                   <CheckCircle2 className="w-3.5 h-3.5" /> All standard mandatory attachments present!
                 </p>
               )}
@@ -293,20 +292,20 @@ export function GeminiSubmissionReviewer({
           </div>
 
           {/* Delay Prevention & Remediation Section */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {/* Delay Risks */}
             {review.delayRisks && review.delayRisks.length > 0 && (
-              <div className="p-4 rounded-xl bg-rose-50/50 border border-rose-100 shadow-2xs space-y-2">
-                <div className="flex items-center gap-2 pb-1.5 border-b border-rose-100/80">
-                  <Clock className="w-4 h-4 text-rose-600" />
-                  <h5 className="text-xs font-bold text-rose-950">
-                    Identified Delay Risks & Bottlenecks
+              <div className="p-3 rounded-md bg-rose-50/40 border border-rose-200/80 shadow-2xs space-y-1.5">
+                <div className="flex items-center gap-1.5 pb-1 border-b border-rose-100">
+                  <Clock className="w-3.5 h-3.5 text-rose-600" />
+                  <h5 className="text-xs font-semibold text-rose-950">
+                    Delay Risks Identified
                   </h5>
                 </div>
-                <ul className="space-y-1.5 text-xs text-rose-900">
+                <ul className="space-y-1 text-xs text-rose-900">
                   {review.delayRisks.map((risk, idx) => (
-                    <li key={idx} className="flex items-start gap-2">
-                      <span className="text-rose-500 font-bold shrink-0">⚠️</span>
+                    <li key={idx} className="flex items-start gap-1.5">
+                      <span className="text-rose-500 font-bold shrink-0">•</span>
                       <span>{risk}</span>
                     </li>
                   ))}
@@ -316,17 +315,17 @@ export function GeminiSubmissionReviewer({
 
             {/* Actionable Tips */}
             {review.actionableTips && review.actionableTips.length > 0 && (
-              <div className="p-4 rounded-xl bg-blue-50/50 border border-blue-100 shadow-2xs space-y-2">
-                <div className="flex items-center gap-2 pb-1.5 border-b border-blue-100/80">
-                  <Lightbulb className="w-4 h-4 text-blue-600" />
-                  <h5 className="text-xs font-bold text-blue-950">
-                    Faculty Reviewer Tips
+              <div className="p-3 rounded-md bg-slate-50 border border-slate-200 shadow-2xs space-y-1.5">
+                <div className="flex items-center gap-1.5 pb-1 border-b border-slate-200/70">
+                  <Lightbulb className="w-3.5 h-3.5 text-blue-600" />
+                  <h5 className="text-xs font-semibold text-slate-900">
+                    Reviewer Notes
                   </h5>
                 </div>
-                <ul className="space-y-1.5 text-xs text-blue-900">
+                <ul className="space-y-1 text-xs text-slate-600">
                   {review.actionableTips.map((tip, idx) => (
-                    <li key={idx} className="flex items-start gap-2">
-                      <span className="text-blue-500 font-bold shrink-0">💡</span>
+                    <li key={idx} className="flex items-start gap-1.5">
+                      <span className="text-slate-400 font-bold shrink-0">•</span>
                       <span>{tip}</span>
                     </li>
                   ))}
@@ -336,15 +335,15 @@ export function GeminiSubmissionReviewer({
           </div>
 
           {/* Instant Inline Upload to Fix Missing Documents */}
-          <div className="p-4 rounded-xl bg-white border border-indigo-100 shadow-2xs">
+          <div className="p-3.5 rounded-md bg-white border border-slate-200 shadow-2xs">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
               <div>
-                <span className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
-                  <UploadCloud className="w-4 h-4 text-indigo-600" />
-                  Quick Attach Missing Proof Right Here
+                <span className="text-xs font-semibold text-slate-800 flex items-center gap-1.5">
+                  <UploadCloud className="w-3.5 h-3.5 text-blue-600" />
+                  Attach Additional Documents
                 </span>
                 <p className="text-[11px] text-slate-500 mt-0.5">
-                  Need to attach an additional offer letter or fee slip? Upload directly without losing your place.
+                  Need to attach an additional offer letter or fee slip? Upload directly to re-verify.
                 </p>
               </div>
 
@@ -364,29 +363,29 @@ export function GeminiSubmissionReviewer({
                   size="sm"
                   onClick={() => fileInputRef.current?.click()}
                   loading={uploadingInline}
-                  className="text-xs border-indigo-200 text-indigo-700 hover:bg-indigo-50"
+                  className="text-xs"
                 >
                   <UploadCloud className="w-3.5 h-3.5 mr-1.5" />
-                  {uploadingInline ? "Uploading & Analyzing..." : "Upload Missing File"}
+                  {uploadingInline ? "Uploading..." : "Upload Document"}
                 </Button>
               </div>
             </div>
 
             {/* List Current Attachments */}
             {attachments.length > 0 && (
-              <div className="mt-3 pt-3 border-t border-slate-100 flex flex-wrap gap-2">
+              <div className="mt-2.5 pt-2.5 border-t border-slate-100 flex flex-wrap gap-1.5">
                 {attachments.map((att) => (
                   <span
                     key={att._id}
-                    className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-100 border border-slate-200 text-[11px] font-medium text-slate-700"
+                    className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-slate-50 border border-slate-200 text-[11px] font-medium text-slate-700"
                   >
-                    <FileCheck className="w-3.5 h-3.5 text-emerald-600" />
+                    <FileCheck className="w-3 h-3 text-emerald-600" />
                     {att.fileName}
                     {onRemoveAttachment && (
                       <button
                         type="button"
                         onClick={() => onRemoveAttachment(att._id)}
-                        className="text-slate-400 hover:text-rose-600 ml-1"
+                        className="text-slate-400 hover:text-rose-600 ml-0.5 cursor-pointer"
                         title="Remove attachment"
                       >
                         <X className="w-3 h-3" />

@@ -24,14 +24,14 @@ export function ApprovalTimeline({
   overallStatus: string;
 }) {
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs">
+    <div className="bg-white rounded-lg border border-slate-200/90 p-5 sm:p-6">
       <h3 className="text-sm font-semibold text-slate-900 mb-6 flex items-center gap-2">
-        <UserCheck className="w-4 h-4 text-blue-600" />
+        <UserCheck className="w-4 h-4 text-slate-700" />
         Official Approval Pipeline
       </h3>
 
       <div className="relative">
-        <div className="space-y-8">
+        <div className="space-y-7">
           {steps.map((step, idx) => {
             const isCompleted = step.status === "APPROVED";
             const isRejected = step.status === "REJECTED";
@@ -39,11 +39,11 @@ export function ApprovalTimeline({
             const isCurrent = idx === currentStepIndex && overallStatus !== "APPROVED" && overallStatus !== "REJECTED";
 
             return (
-              <div key={idx} className="relative flex items-start gap-4">
+              <div key={idx} className="relative flex items-start gap-3.5">
                 {/* Connecting line */}
                 {idx < steps.length - 1 && (
                   <div
-                    className={`absolute left-4 top-8 w-0.5 h-full -ml-[1px] ${
+                    className={`absolute left-3.5 top-7 w-px h-full -ml-[0.5px] ${
                       isCompleted ? "bg-emerald-400" : "bg-slate-200"
                     }`}
                   />
@@ -52,23 +52,23 @@ export function ApprovalTimeline({
                 {/* Status Icon */}
                 <div className="relative z-10 flex items-center justify-center">
                   {isCompleted ? (
-                    <div className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center ring-4 ring-white">
-                      <CheckCircle2 className="w-5 h-5" />
+                    <div className="w-7 h-7 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center">
+                      <CheckCircle2 className="w-4 h-4" />
                     </div>
                   ) : isRejected ? (
-                    <div className="w-8 h-8 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center ring-4 ring-white">
-                      <XCircle className="w-5 h-5" />
+                    <div className="w-7 h-7 rounded-full bg-rose-50 text-rose-600 border border-rose-200 flex items-center justify-center">
+                      <XCircle className="w-4 h-4" />
                     </div>
                   ) : isChanges ? (
-                    <div className="w-8 h-8 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center ring-4 ring-white">
-                      <AlertCircle className="w-5 h-5" />
+                    <div className="w-7 h-7 rounded-full bg-amber-50 text-amber-600 border border-amber-200 flex items-center justify-center">
+                      <AlertCircle className="w-4 h-4" />
                     </div>
                   ) : isCurrent ? (
-                    <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center ring-4 ring-white animate-pulse">
-                      <Clock className="w-5 h-5" />
+                    <div className="w-7 h-7 rounded-full bg-blue-50 text-blue-700 border border-blue-300 flex items-center justify-center">
+                      <Clock className="w-4 h-4" />
                     </div>
                   ) : (
-                    <div className="w-8 h-8 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center ring-4 ring-white text-xs font-semibold">
+                    <div className="w-7 h-7 rounded-full bg-slate-50 text-slate-500 border border-slate-200 flex items-center justify-center text-xs font-medium">
                       {step.stepNumber}
                     </div>
                   )}
@@ -78,7 +78,7 @@ export function ApprovalTimeline({
                 <div className="flex-1 pt-0.5">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h4 className="text-sm font-semibold text-slate-900">{step.title}</h4>
+                      <h4 className="text-xs sm:text-sm font-semibold text-slate-900">{step.title}</h4>
                       <p className="text-xs text-slate-500 mt-0.5">
                         {step.assignedFacultyName ? `Assigned to: ${step.assignedFacultyName}` : `Role: ${step.assignedRole}`}
                       </p>
@@ -90,7 +90,7 @@ export function ApprovalTimeline({
 
                   {step.comments && (
                     <div
-                      className={`mt-2 p-3 rounded-xl text-xs border ${
+                      className={`mt-2 p-2.5 rounded-md text-xs border ${
                         isRejected
                           ? "bg-rose-50/70 border-rose-200 text-rose-900"
                           : isChanges

@@ -58,105 +58,73 @@ export default function FacultyOverviewPage() {
 
   return (
     <DashboardLayout title="Faculty Approval Portal" requiredRole="FACULTY">
-      {/* Welcome banner */}
-      <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-blue-950 rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
-        <div className="relative z-10 max-w-2xl">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-white/15 text-indigo-200 backdrop-blur-md mb-3">
-            <UserCheck className="w-3.5 h-3.5 text-indigo-300" />
-            Authorized Department Reviewer
-          </span>
-          <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
-            Welcome, {user?.name}
+      {/* Page Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-2 border-b border-slate-200/80">
+        <div>
+          <h2 className="text-xl sm:text-2xl font-semibold text-slate-900 tracking-tight">
+            Review Portal — {user?.name}
           </h2>
-          <p className="text-sm text-slate-300 mt-2 leading-relaxed">
-            You have <strong className="text-white font-bold">{pendingRequests.length} applications</strong> currently
-            awaiting your departmental approval and verification.
+          <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
+            You have <span className="font-semibold text-slate-900">{pendingRequests.length} pending applications</span> requiring departmental sign-off.
           </p>
-
-          <div className="mt-6 flex flex-wrap gap-3">
-            <Link href="/faculty/inbox">
-              <Button size="md" className="bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-600/30">
-                <Inbox className="w-4 h-4 mr-1" /> Open Approval Inbox ({pendingRequests.length})
-              </Button>
-            </Link>
-            <Link href="/faculty/processed">
-              <Button size="md" variant="outline" className="bg-white/10 hover:bg-white/20 text-white border-white/20">
-                <CheckCircle2 className="w-4 h-4 mr-1" /> Processed History
-              </Button>
-            </Link>
-          </div>
+        </div>
+        <div className="flex items-center gap-2.5 shrink-0">
+          <Link href="/faculty/processed">
+            <Button variant="outline" size="sm">
+              <CheckCircle2 className="w-3.5 h-3.5 mr-1" />
+              History
+            </Button>
+          </Link>
+          <Link href="/faculty/inbox">
+            <Button size="sm">
+              <Inbox className="w-3.5 h-3.5 mr-1" />
+              Open Inbox ({pendingRequests.length})
+            </Button>
+          </Link>
         </div>
       </div>
 
-      {/* Metric Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-        <div className="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-xs hover:shadow-md transition-shadow">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-blue-600 uppercase tracking-wider">
-              Pending Review
-            </span>
-            <div className="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
-              <Clock className="w-4 h-4" />
-            </div>
-          </div>
-          <p className="text-3xl font-extrabold text-slate-900 mt-3">{pendingRequests.length}</p>
-          <span className="text-xs text-blue-600 font-medium mt-1 block">Requires action</span>
+      {/* Metric KPI Grid */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <div className="bg-white rounded-lg p-4 border border-slate-200/90 shadow-2xs">
+          <span className="text-[11px] font-medium text-slate-500 uppercase tracking-wider block">Pending Review</span>
+          <p className="text-2xl font-semibold text-slate-900 mt-1 tracking-tight">{pendingRequests.length}</p>
+          <span className="text-xs text-blue-600 font-medium mt-0.5 block">Requires official action</span>
         </div>
 
-        <div className="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-xs hover:shadow-md transition-shadow">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-emerald-600 uppercase tracking-wider">
-              Approved
-            </span>
-            <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
-              <CheckCircle2 className="w-4 h-4" />
-            </div>
-          </div>
-          <p className="text-3xl font-extrabold text-slate-900 mt-3">{approvedRequests.length}</p>
-          <span className="text-xs text-emerald-600 font-medium mt-1 block">Authorized by faculty</span>
+        <div className="bg-white rounded-lg p-4 border border-slate-200/90 shadow-2xs">
+          <span className="text-[11px] font-medium text-slate-500 uppercase tracking-wider block">Approved</span>
+          <p className="text-2xl font-semibold text-slate-900 mt-1 tracking-tight">{approvedRequests.length}</p>
+          <span className="text-xs text-emerald-600 font-medium mt-0.5 block">Authorized endorsements</span>
         </div>
 
-        <div className="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-xs hover:shadow-md transition-shadow">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-amber-600 uppercase tracking-wider">
-              Changes Requested
-            </span>
-            <div className="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
-              <AlertCircle className="w-4 h-4" />
-            </div>
-          </div>
-          <p className="text-3xl font-extrabold text-slate-900 mt-3">{changesRequests.length}</p>
-          <span className="text-xs text-amber-600 font-medium mt-1 block">Awaiting student update</span>
+        <div className="bg-white rounded-lg p-4 border border-slate-200/90 shadow-2xs">
+          <span className="text-[11px] font-medium text-slate-500 uppercase tracking-wider block">Changes Requested</span>
+          <p className="text-2xl font-semibold text-slate-900 mt-1 tracking-tight">{changesRequests.length}</p>
+          <span className="text-xs text-amber-600 font-medium mt-0.5 block">Awaiting student update</span>
         </div>
 
-        <div className="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-xs hover:shadow-md transition-shadow">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-rose-600 uppercase tracking-wider">
-              Rejected
-            </span>
-            <div className="w-9 h-9 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center">
-              <XCircle className="w-4 h-4" />
-            </div>
-          </div>
-          <p className="text-3xl font-extrabold text-slate-900 mt-3">{rejectedRequests.length}</p>
-          <span className="text-xs text-rose-600 font-medium mt-1 block">Ineligible requests</span>
+        <div className="bg-white rounded-lg p-4 border border-slate-200/90 shadow-2xs">
+          <span className="text-[11px] font-medium text-slate-500 uppercase tracking-wider block">Rejected</span>
+          <p className="text-2xl font-semibold text-slate-900 mt-1 tracking-tight">{rejectedRequests.length}</p>
+          <span className="text-xs text-slate-400 mt-0.5 block">Ineligible requests</span>
         </div>
       </div>
 
       {/* Main Grid: Pending Approval Inbox & Weekly Turnaround */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         {/* Pending Approval Inbox */}
-        <div className="lg:col-span-2 bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
-          <div className="flex items-center justify-between p-5 border-b border-slate-100">
+        <div className="lg:col-span-2 bg-white rounded-lg border border-slate-200/90 shadow-2xs overflow-hidden">
+          <div className="flex items-center justify-between px-5 py-3.5 border-b border-slate-100 bg-slate-50/50">
             <div>
-              <h3 className="font-bold text-slate-900 text-base">Pending Approval Inbox</h3>
+              <h3 className="font-semibold text-slate-900 text-sm">Pending Approval Inbox</h3>
               <p className="text-xs text-slate-500">Student applications assigned for review</p>
             </div>
             <Link
               href="/faculty/inbox"
-              className="text-xs font-semibold text-indigo-600 hover:text-indigo-700 inline-flex items-center gap-1"
+              className="text-xs font-medium text-blue-600 hover:text-blue-700 inline-flex items-center gap-1"
             >
-              Open full inbox <ChevronRight className="w-4 h-4" />
+              Open full inbox <ChevronRight className="w-3.5 h-3.5" />
             </Link>
           </div>
 
@@ -207,26 +175,28 @@ export default function FacultyOverviewPage() {
         </div>
 
         {/* Weekly Turnaround Volume Chart */}
-        <div className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs flex flex-col justify-between">
+        <div className="bg-white rounded-lg border border-slate-200/90 p-4 shadow-2xs flex flex-col justify-between">
           <div>
-            <h3 className="font-bold text-slate-900 text-base">Weekly Activity</h3>
-            <p className="text-xs text-slate-500 mb-4">Volume of student applications processed</p>
+            <h3 className="font-semibold text-slate-900 text-sm">Weekly Activity</h3>
+            <p className="text-xs text-slate-500 mb-3">Volume of student applications processed</p>
 
-            <div className="h-56 w-full">
+            <div className="h-52 w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={weeklyLoadData}>
                   <XAxis dataKey="day" stroke="#94a3b8" fontSize={11} />
                   <YAxis stroke="#94a3b8" fontSize={11} />
                   <Tooltip />
-                  <Bar dataKey="processed" fill="#4f46e5" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="processed" fill="#3b82f6" radius={[3, 3, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
           </div>
 
-          <div className="p-3.5 rounded-xl bg-indigo-50/70 border border-indigo-100 mt-4 text-xs text-indigo-900">
-            <span className="font-bold block mb-1">Audit Trail Active</span>
-            Every approval decision, rejection justification, and change request is immutably logged with timestamp.
+          <div className="p-3 rounded-md bg-slate-50 border border-slate-200/80 mt-3 text-xs text-slate-600">
+            <span className="font-medium text-slate-900 block mb-0.5">Audit Trail Active</span>
+            <p className="text-[11px] text-slate-500 leading-relaxed">
+              Every approval decision, rejection justification, and change request is immutably logged with timestamp.
+            </p>
           </div>
         </div>
       </div>

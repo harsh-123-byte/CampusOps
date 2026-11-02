@@ -54,26 +54,30 @@ export default function AdminAllRequestsPage() {
 
   return (
     <DashboardLayout title="Master Request Registry" requiredRole="ADMIN">
-      <div className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs space-y-4">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div>
-            <h2 className="text-lg font-bold text-slate-900">Campus-Wide Applications Registry</h2>
-            <p className="text-xs text-slate-500">
-              Total {totalCount} applications across all student cohorts and departments
-            </p>
-          </div>
+      {/* Page Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-2 border-b border-slate-200/80">
+        <div>
+          <h2 className="text-xl sm:text-2xl font-semibold text-slate-900 tracking-tight">
+            Master Application Registry
+          </h2>
+          <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
+            {totalCount} total application{totalCount === 1 ? "" : "s"} across all academic divisions and cohorts
+          </p>
         </div>
+      </div>
 
-        {/* Filter bar */}
-        <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 pt-3 border-t border-slate-100">
+      {/* Unified Table Container */}
+      <div className="bg-white rounded-lg border border-slate-200/90 shadow-2xs overflow-hidden">
+        {/* Integrated Filter Bar */}
+        <div className="p-3 border-b border-slate-200 bg-slate-50/60 grid grid-cols-1 sm:grid-cols-12 gap-2.5">
           <form onSubmit={handleSearchSubmit} className="sm:col-span-6 relative">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
+            <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5" />
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search by request #, student name, or title..."
-              className="w-full pl-9 pr-4 py-2 rounded-xl border border-slate-200 text-xs bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full pl-8 pr-3 py-1.5 rounded-md border border-slate-200 bg-white text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900"
             />
           </form>
 
@@ -84,7 +88,7 @@ export default function AdminAllRequestsPage() {
                 setStatus(e.target.value);
                 setPage(1);
               }}
-              className="w-full py-2 px-3 rounded-xl border border-slate-200 text-xs bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full py-1.5 px-2.5 rounded-md border border-slate-200 bg-white text-xs text-slate-700 focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900"
             >
               <option value="ALL">All Statuses</option>
               <option value="SUBMITTED">Submitted</option>
@@ -104,7 +108,7 @@ export default function AdminAllRequestsPage() {
                 setType(e.target.value);
                 setPage(1);
               }}
-              className="w-full py-2 px-3 rounded-xl border border-slate-200 text-xs bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full py-1.5 px-2.5 rounded-md border border-slate-200 bg-white text-xs text-slate-700 focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900"
             >
               <option value="ALL">All Categories</option>
               <option value="BONAFIDE">Bonafide Certificate</option>
@@ -116,10 +120,6 @@ export default function AdminAllRequestsPage() {
             </select>
           </div>
         </div>
-      </div>
-
-      {/* Table */}
-      <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
         {loading ? (
           <div className="p-16 text-center text-sm text-slate-500 flex flex-col items-center justify-center gap-2">
             <Loader2 className="w-6 h-6 animate-spin text-blue-600" />
